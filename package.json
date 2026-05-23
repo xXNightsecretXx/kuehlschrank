@@ -1,0 +1,20 @@
+{
+  "name": "kuehlschrank",
+  "version": "1.0.0",
+  "description": "Farning Kühlschrankarchiv",
+  "keywords": [
+    "nodejs"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.platform4.me/lukas/kuehlschrank.git"
+  },
+  "license": "ISC",
+  "author": "Lukas",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo test",
+    "start": "node server.js"
+  }
+}
