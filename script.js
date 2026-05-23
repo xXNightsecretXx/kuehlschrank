@@ -3,6 +3,9 @@ var path = document.location.pathname;
 /*---Horizontal Scroll-------------*/
 const horizontal = document.scrollingElement
 window.addEventListener("wheel", (e) => {
+  const target = e.target.closest(".image-group");
+  if (target) return; // Allow vertical scroll on image-group
+  
   e.preventDefault();
   horizontal.scrollLeft += e.deltaY;
 }, { passive: false });

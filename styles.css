@@ -76,7 +76,7 @@ body {
   min-width: 5000px;
   overflow-x: auto;
   overflow-y: hidden;
-  position: relative;
+  position: auto;
   width: 100%;
 }
 
@@ -155,4 +155,37 @@ h1, h2, h3, h4, h5, h6, p { color: var(--text); }
 #arrow-head-bottom  {
   transform: translateY(-50%) rotate(-45deg);
   top: calc(50% - sqrt(2) * 1px);
+}
+
+/*---Images------------------------*/
+.images {
+  display: flex;
+  gap: 192px;
+  left: 16px;
+  max-height: calc(50vh - 64px);
+  position: absolute;
+}
+
+#images-top {
+  top: 64px;
+}
+
+#images-bottom {
+  bottom: 64px;
+  left: 176px;
+}
+
+.image-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.image-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: calc(50vh - 150px);
+  overflow-y: auto;
+  scrollbar-width: none;
+  width: 128px
 }
