@@ -1,0 +1,158 @@
+/*
+  Kühlschrank - styles.css
+  Please sort all properties after Global alphabetically.
+  Resting elements should not have shadows, only active ones (hover, focus, active); light angle is 45° from top, scattered up to 22.5°.
+*/
+
+/*---Tokens------------------------*/
+:root {
+  --radius:     10px;
+  --radius-lg:  14px;
+  --font:       'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/*---Colors------------------------*/
+:root {
+  --shadow-dp4:  0  4px  4px rgba(0,0,0,.13);
+  --shadow-dp5:  0  5px  5px rgba(0,0,0,.125);
+  --shadow-dp6:  0  6px  6px rgba(0,0,0,.12);
+  --shadow-dp7:  0  7px  7px rgba(0,0,0,.115);
+  --shadow-dp8:  0  8px  8px rgba(0,0,0,.11);
+  --shadow-dp9:  0  9px  9px rgba(0,0,0,.105);
+  --shadow-dp10: 0 10px 10px rgba(0,0,0,.10);
+  --shadow-dp11: 0 11px 11px rgba(0,0,0,.095);
+  --shadow-dp12: 0 12px 12px rgba(0,0,0,.09);
+
+  --scrim: #00000080;
+}
+
+:root {
+  --dp0:  #121212;
+  --dp1:  #1C1C1C;
+  --dp2:  #202020;
+  --dp4:  #242424;
+  --dp6:  #272727;
+  --dp8:  #292929;
+  --dp12: #2D2D2D;
+
+  --border:         #3f3f3f;
+  --border-variant: #4f4f4f;
+  --text:           #ededed;
+  --text-variant:   #939393;
+}
+
+[data-theme="light"] {
+  --dp0:  #ffffff;
+  --dp1:  #F1F1F1;
+  --dp2:  #EBEBEB;
+  --dp4:  #E5E5E5;
+  --dp6:  #DFDFDF;
+  --dp8:  #DDDDDD;
+  --dp12: #D7D7D7;
+
+  --border:         #bfbfbf;
+  --border-variant: #cfcfcf;
+  --text:           #121212;
+  --text-variant:   #626262;
+}
+
+/*---Global------------------------*/
+* {
+  color: var(--text);
+  font-family: var(--font);
+  /*scroll-behavior: smooth;*/
+}
+
+.hidden {
+  display: none;
+  transition: none;
+}
+
+body {
+  background: var(--dp0);
+  color: var(--text);
+  height: 100%;
+  margin: 0;
+  min-width: 5000px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  position: relative;
+  width: 100%;
+}
+
+h1, h2, h3, h4, h5, h6, p { color: var(--text); }
+
+.btn {
+  align-items: center;
+  background: var(--dp2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-variant);
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  padding: 6px;
+  transition: .15s;
+}
+
+.btn:hover {
+  background: var(--dp8);
+  box-shadow: var(--shadow-dp6);
+  color: var(--text);
+}
+
+/*---Head--------------------------*/
+.icon {
+  height: 16px;
+  width: 16px;
+}
+
+.btn-icon {
+  border-radius: 50%;
+  position: fixed;
+  right: 8px;
+  top: 8px;
+}
+
+#title {
+  top: -28px;
+  padding: 16px;
+  position: fixed;
+}
+
+/*---Arrow-------------------------*/
+.arrow {
+  align-items: center;
+  display: flex;
+  height: 4px;
+  overflow-x: inherit;
+  padding: 0 16px;
+  transform: translateY(calc(50vh - 2px));
+  width: 100%;
+}
+
+#arrow-line {
+  background: var(--text);
+  height: 4px;
+  position: absolute;
+  width: 5000px;
+}
+
+#arrow-head-top,
+#arrow-head-bottom {
+  background: var(--text);
+  height: 4px;
+  position: absolute;
+  right: 16px;
+  transform-origin: right center;
+  width: 24px;
+}
+
+#arrow-head-top {
+  transform: translateY(-50%) rotate(45deg);
+  top: calc(50% + sqrt(2) * 1px);
+}
+#arrow-head-bottom  {
+  transform: translateY(-50%) rotate(-45deg);
+  top: calc(50% - sqrt(2) * 1px);
+}
