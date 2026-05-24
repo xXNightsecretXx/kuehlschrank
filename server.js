@@ -6,25 +6,27 @@ const PORT = 3000;
 
 const server = http.createServer((req, res) => {
   let filePath;
+  const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
+  let pathname = parsedUrl.pathname;
 
+  if (pathname === "/") {
+    pathname = "/index.html";
+  }
+
+  filePath = path.join(__dirname, pathname);
+
+  let stats;
   try {
-    const stats = fs.lstatSync(filename);
-  } 
-  catch (e) {
-    res.writeHead(404, {'Content-Type': 'text/plain'});
+    stats = fs.lstatSync(filePath);
+  } catch (e) {
+    res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.write('404 Not Found\n');
     res.end();
     return;
   }
-
-  if (stats.isFile()) {
-      if (req.url === "/" || req.url === "/index.html") {
-      filePath = path.join(__dirname, "index.html");
-    } else {
-      filePath = path.join(__dirname, req.url.slice(1));
-    }
-  } else if (stats.isDirectory()) {
-    res.writeHead(404, {'Content-Type': 'text/plain'});
+  
+  if (stats.isDirectory()) {
+    res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.write('404 Not Found\n');
     res.end();
     return;
