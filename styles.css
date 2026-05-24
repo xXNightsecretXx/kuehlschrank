@@ -176,6 +176,7 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
 .image-wrapper-top    {top: 64px;}
 .image-wrapper-bottom {bottom: 64px; justify-content: flex-end;}
 
+  /*1 image group*/
 .image-group {
   display: flex;
   flex-direction: column;
@@ -186,8 +187,16 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
   width: 128px;
 }
 
+  /*2 small elements*/
 .spacer {height: 32px;}
 
+.pointer {
+  background: var(--text);
+  height: 16px;
+  width: 4px;
+}
+
+  /*3 text*/
 .text-wrapper {
   display: flex;
   justify-content: center;
@@ -196,7 +205,7 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
 }
 
 .text-wrapper > p {
-  margin: 0px 0;
+  margin: 8px 0;
   max-width: 192px;
   overflow-wrap: anywhere;
 }
