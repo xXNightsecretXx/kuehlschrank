@@ -6,9 +6,8 @@
 
 /*---Tokens------------------------*/
 :root {
-  --radius:     10px;
-  --radius-lg:  14px;
-  --font:       'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --radius:     6px;
+  --font:       'Inter';
 }
 
 /*---Colors------------------------*/
@@ -112,12 +111,23 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
   position: fixed;
   right: 8px;
   top: 8px;
+  z-index: 101;
 }
 
 #title {
   top: -28px;
   padding: 16px;
   position: fixed;
+}
+
+#scrim {
+  background: var(--scrim);
+  height: 100%;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
 }
 
 /*---Arrow-------------------------*/
@@ -132,14 +142,15 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
 
 #arrow-line {
   background: var(--text);
+  border-radius: 2px;
   height: 4px;
   position: absolute;
-  /*width: 100%;*/
 }
 
 #arrow-head-top,
 #arrow-head-bottom {
   background: var(--text);
+  border-radius: 2px;
   height: 4px;
   position: absolute;
   right: 0;
@@ -197,6 +208,7 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
 
 .pointer {
   background: var(--text);
+  border-radius: 2px;
   height: 16px;
   width: 4px;
 }
@@ -219,4 +231,29 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
   margin: 0;
   max-width: 192px;
   overflow-wrap: anywhere;
+}
+
+/*---Image View-------------------*/
+.image-view-wrapper {
+  display: flex;
+  height: 80vh;
+  justify-content: center;
+  left: 10vw;
+  top: 10vh;
+  pointer-events: none;
+  position: fixed;
+  width: 80vw;
+  z-index: 102;
+}
+
+.image-view {
+  box-shadow: var(--shadow-dp12);
+  transition: .04s;
+  max-height: 80vh;
+  max-width: 80vw;
+  object-fit: scale-down;
+}
+
+.image-preview {
+  border-radius: var(--radius);
 }

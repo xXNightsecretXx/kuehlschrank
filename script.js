@@ -57,3 +57,22 @@ $$("[data-theme-toggle]").forEach(btn =>
 );
 
 applyTheme(currentTheme());
+
+/*---Image View--------------------*/
+const previews = document.getElementsByClassName("image-preview");
+const images = document.getElementsByClassName("image-view");
+const scrim = document.getElementById("scrim");
+
+for (let i = 0; i < previews.length; i++) {
+  previews[i].addEventListener("click", () => {
+    for (let j = 0; j < images.length; j++) {images[j].classList.add("hidden");} // hide all images
+
+    images[i].classList.remove("hidden"); // show corresponding image
+    scrim.classList.remove("hidden"); // show scrim
+  });
+}
+
+scrim.addEventListener("click", () => {
+  for (let j = 0; j < images.length; j++) {images[j].classList.add("hidden");} // hide all images
+  scrim.classList.add("hidden"); // hide scrim
+});
