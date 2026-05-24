@@ -160,24 +160,31 @@ h1, h2, h3, h4, h5, h6, p { color: var(--text); }
 /*---Images------------------------*/
 .images {
   display: flex;
-  gap: 192px;
+  gap: 32px;
   left: 16px;
   max-height: calc(50vh - 64px);
   position: absolute;
-}
-
-#images-top {
   top: 64px;
-}
-
-#images-bottom {
-  bottom: 64px;
-  left: 176px;
 }
 
 .image-wrapper {
   display: flex;
   flex-direction: column;
+  height: calc(100vh - 128px);
+}
+
+.image-wrapper-top {
+  top: 64px;
+}
+
+.image-wrapper-bottom {
+  bottom: 64px;
+  justify-content: flex-end;
+  left: 96px;
+}
+
+.text-wrapper {
+  align-items: center;
 }
 
 .image-group {
@@ -187,5 +194,5 @@ h1, h2, h3, h4, h5, h6, p { color: var(--text); }
   max-height: calc(50vh - 150px);
   overflow-y: auto;
   scrollbar-width: none;
-  width: 128px
+  width: 128px;
 }
