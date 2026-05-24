@@ -1,3 +1,5 @@
+const centerX = window.innerWidth / 2;
+
 function $$(selector) {
   return document.querySelectorAll(selector);
 };
@@ -7,11 +9,10 @@ const horizontal = document.scrollingElement
 window.addEventListener("wheel", (e) => {
   const target = e.target.closest(".image-group");
   if (target) {
-    if (target.scrollHeight > target.clientHeight) {
-      return;
-    }
+    if (target.scrollHeight > target.clientHeight) {return;}
     e.preventDefault();
     horizontal.scrollLeft += e.deltaY;
+
     return;
   }
   
@@ -76,3 +77,25 @@ scrim.addEventListener("click", () => {
   for (let j = 0; j < images.length; j++) {images[j].classList.add("hidden");} // hide all images
   scrim.classList.add("hidden"); // hide scrim
 });
+
+/*---Auto Year---------------------*/
+function setCurrentYear() {
+  const years = document.getElementsByClassName("year");
+  const indicator = document.getElementById("year-indicator");
+  const currentYear = getRightmostLeftElement(years).innerHTML;
+  indicator.innerHTML = currentYear;
+}
+
+function getRightmostLeftElement(divs) { // gets the rightmost div left the center
+  let result;
+
+  for (const div of divs) {
+    const divPos = div.getBoundingClientRect().left + div.getBoundingClientRect().width / 2;
+
+    if (divPos < centerX) {result = div;} else {break;}
+  }
+  return result;
+}
+
+window.addEventListener("scroll", (e) => {setCurrentYear()})
+setCurrentYear();
