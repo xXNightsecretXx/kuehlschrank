@@ -1,4 +1,4 @@
-const centerX = window.innerWidth / 2;
+let centerX = window.innerWidth / 2;
 
 function $$(selector) {
   return document.querySelectorAll(selector);
@@ -97,5 +97,6 @@ function getRightmostLeftElement(divs) { // gets the rightmost div left the cent
   return result;
 }
 
-window.addEventListener("scroll", (e) => {setCurrentYear()})
 setCurrentYear();
+window.addEventListener("scroll", (e) => {setCurrentYear()})
+window.addEventListener("resize", (e) => {centerX = window.innerWidth / 2; setCurrentYear()})
