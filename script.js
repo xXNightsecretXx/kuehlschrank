@@ -1,23 +1,36 @@
-var path = document.location.pathname;
+function $$(selector) {
+  return document.querySelectorAll(selector);
+};
 
 /*---Horizontal Scroll-------------*/
 const horizontal = document.scrollingElement
 window.addEventListener("wheel", (e) => {
+  const target = e.target.closest(".image-group");
+  if (target) return; // Allow vertical scroll on image-group
+  
   e.preventDefault();
   horizontal.scrollLeft += e.deltaY;
 }, { passive: false });
 
-/*---Theme-------------------------*/
-function $$(selector) {
-  return document.querySelectorAll(selector);
+/*---Arrow Auto-Resize-------------*/
+function resizeArrow() {
+  const width = document.getElementsByClassName("images")[0].offsetWidth;
+  const arrow = document.getElementsByClassName("arrow")[0];
+  const arrow_line = document.getElementById("arrow-line");
+  
+  arrow.style.width = width + 48 + 'px';
+  arrow_line.style.width = width + 48 + 'px';
 }
 
+resizeArrow();
+
+/*---Theme-------------------------*/
 function currentTheme() {
   const theme = document.documentElement.dataset.theme;
   if (theme === "light" || theme === "dark") return theme;
 
   return window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark";
-}
+};
 
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
@@ -30,15 +43,10 @@ function applyTheme(theme) {
   $$("[data-icon-moon]").forEach(el => {
     el.classList.toggle("hidden", showSun);
   });
-}
+};
 
 $$("[data-theme-toggle]").forEach(btn =>
   btn.addEventListener("click", () => applyTheme(currentTheme() === "light" ? "dark" : "light"))
 );
 
 applyTheme(currentTheme());
-
-var fs = require('fs');
-var files = fs.readdirSync('C:/Users/Lukas/Desktop/Visual_Studio_Code/HTML/kühlschrank/assets/preview/2025/07-19');
-// call loader on DOMContentLoaded
-window.addEventListener("DOMContentLoaded", () => loadPreviewImages());
