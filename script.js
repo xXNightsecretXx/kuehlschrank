@@ -12,6 +12,18 @@ window.addEventListener("wheel", (e) => {
   horizontal.scrollLeft += e.deltaY;
 }, { passive: false });
 
+/*---Arrow Auto-Resize-------------*/
+function resizeArrow() {
+  const width = document.getElementsByClassName("images")[0].offsetWidth;
+  const arrow = document.getElementsByClassName("arrow")[0];
+  const arrow_line = document.getElementById("arrow-line");
+  
+  arrow.style.width = width + 48 + 'px';
+  arrow_line.style.width = width + 48 + 'px';
+}
+
+resizeArrow();
+
 /*---Theme-------------------------*/
 function currentTheme() {
   const theme = document.documentElement.dataset.theme;
