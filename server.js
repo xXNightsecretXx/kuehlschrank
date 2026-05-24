@@ -5,16 +5,15 @@ const path = require("path");
 const PORT = 3000;
 
 const server = http.createServer((req, res) => {
-  let filePath;
+  // parse URL
   const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
   let pathname = parsedUrl.pathname;
-
   if (pathname === "/") {
     pathname = "/index.html";
   }
+  const filePath = path.join(__dirname, pathname);
 
-  filePath = path.join(__dirname, pathname);
-
+  // check if file exists and is not a directory
   let stats;
   try {
     stats = fs.lstatSync(filePath);
@@ -24,7 +23,7 @@ const server = http.createServer((req, res) => {
     res.end();
     return;
   }
-  
+
   if (stats.isDirectory()) {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.write('404 Not Found\n');
@@ -32,6 +31,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // read file and serve
   fs.readFile(filePath, (err, content) => {
     if (err) {
       res.writeHead(500, { "Content-Type": "text/plain" });
