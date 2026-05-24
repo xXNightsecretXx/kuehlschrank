@@ -1,45 +1,42 @@
-const http = require("http");
-const fs = require("fs");
-const path = require("path");
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
 
 const PORT = 3000;
 
 const server = http.createServer((req, res) => {
-  const requestPath = req.url === "/" ? "/index.html" : req.url;
-  const cleanPath = requestPath.split("?")[0].split("#")[0];
-  let filePath = path.normalize(path.join(__dirname, cleanPath));
+  var filename = path.join(process.cwd(), unescape(uri));
+  var stats;
 
-  if (!filePath.startsWith(__dirname)) {
-    res.writeHead(403, { "Content-Type": "text/plain" });
-    res.end("403 - Forbidden");
+  try {
+    stats = fs.lstatSync(filename); // throws if path doesn't exist
+  } 
+  catch (e) {
+    res.writeHead(404, {'Content-Type': 'text/plain'});
+    res.write('404 Not Found\n');
+    res.end();
     return;
   }
 
-  fs.readFile(filePath, (err, content) => {
-    if (err) {
-      if (err.code === "ENOENT") {
-        res.writeHead(404, { "Content-Type": "text/plain" });
-        res.end("404 - Not Found");
-        return;
-      }
-      res.writeHead(500, { "Content-Type": "text/plain" });
-      res.end("500 - Internal Server Error");
-      return;
-    }
 
-    const ext = path.extname(filePath).toLowerCase();
-    let contentType = "text/plain";
-    if (ext === ".html" || ext === ".htm") contentType = "text/html";
-    else if (ext === ".css") contentType = "text/css";
-    else if (ext === ".js") contentType = "application/javascript";
-    else if (ext === ".jpg" || ext === ".jpeg") contentType = "image/jpeg";
-    else if (ext === ".svg") contentType = "image/svg+xml";
-    else if (ext === ".txt") contentType = "text/plain";
-    else if (ext === ".webp") contentType = "image/webp";
+  if (stats.isFile()) {
+    var mimeType = mimeTypes[path.extname(filename).split(".").reverse()[0]];
+    res.writeHead(200, {'Content-Type': mimeType} );
 
-    res.writeHead(200, { "Content-Type": contentType });
-    res.end(content);
-  });
+    var fileStream = fs.createReadStream(filename);
+    fileStream.pipe(res);
+    return;
+  } else if (stats.isDirectory()) {
+    res.writeHead(404, {'Content-Type': 'text/plain'});
+    res.write('404 Not Found\n');
+    res.end();
+    return;
+  } else {
+    res.writeHead(500, {'Content-Type': 'text/plain'});
+    res.write('500 Internal server error\n');
+    res.end();
+    return;
+  }
 });
 
 server.listen(PORT);
