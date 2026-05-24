@@ -5,38 +5,34 @@ const path = require('path');
 const PORT = 3000;
 
 const server = http.createServer((req, res) => {
-  var filename = path.join(process.cwd(), unescape(uri));
-  var stats;
+  let filePath;
 
-  try {
-    stats = fs.lstatSync(filename); // throws if path doesn't exist
-  } 
-  catch (e) {
-    res.writeHead(404, {'Content-Type': 'text/plain'});
-    res.write('404 Not Found\n');
-    res.end();
-    return;
-  }
-
-
-  if (stats.isFile()) {
-    var mimeType = mimeTypes[path.extname(filename).split(".").reverse()[0]];
-    res.writeHead(200, {'Content-Type': mimeType} );
-
-    var fileStream = fs.createReadStream(filename);
-    fileStream.pipe(res);
-    return;
-  } else if (stats.isDirectory()) {
-    res.writeHead(404, {'Content-Type': 'text/plain'});
-    res.write('404 Not Found\n');
-    res.end();
-    return;
+  if (req.url === '/' || req.url === '/index.html') {
+    filePath = path.join(__dirname, 'index.html');
+  } else if (req.url === '/styles.css') {
+    filePath = path.join(__dirname, 'styles.css');
+  } else if (req.url === '/script.js') {
+    filePath = path.join(__dirname, 'script.js');
   } else {
-    res.writeHead(500, {'Content-Type': 'text/plain'});
-    res.write('500 Internal server error\n');
-    res.end();
+    res.writeHead(404, { 'Content-Type': 'text/plain' });
+    res.end('404 - Not Found');
     return;
   }
+
+  fs.readFile(filePath, (err, content) => {
+    if (err) {
+      res.writeHead(500, { 'Content-Type': 'text/plain' });
+      res.end('500 - Internal Server Error');
+      return;
+    }
+
+    let contentType = 'text/html';
+    if (filePath.endsWith('.css')) contentType = 'text/css';
+    if (filePath.endsWith('.js')) contentType = 'application/javascript';
+
+    res.writeHead(200, { 'Content-Type': contentType });
+    res.end(content);
+  });
 });
 
 server.listen(PORT);
