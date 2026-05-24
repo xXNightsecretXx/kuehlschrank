@@ -100,6 +100,29 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
   color: var(--text);
 }
 
+/*---Animations--------------------*/
+@keyframes slideInFromTop {
+  0% {
+    transform: translateY(-20%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromBottom {
+  0% {
+    transform: translateY(20%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 /*---Head--------------------------*/
 .icon {
   height: 16px;
@@ -183,8 +206,13 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
   flex-direction: column;
   height: calc(100vh - 128px);
 }
-.image-wrapper-top    {top: 64px;}
-.image-wrapper-bottom {bottom: 64px; justify-content: flex-end;}
+.image-wrapper-top {
+  top: 64px;
+}
+.image-wrapper-bottom {
+  bottom: 64px;
+  justify-content: flex-end;
+}
 
   /*1 image group*/
 .image-group {
@@ -192,7 +220,10 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
   flex-direction: column;
   gap: 16px;
   height: calc(50vh - 96px);
+  margin: -18px;
+  overflow-x: visible;
   overflow-y: auto;
+  padding: 18px;
   scrollbar-width: none;
   width: 128px;
 }
@@ -200,8 +231,10 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
 .image-wrapper-top > .image-group {
   flex-direction: column-reverse;
   justify-content: flex-start;
-  overflow-y: auto;
 }
+
+.image-wrapper-top > .image-group {animation: 0.5s ease-out 0s 1 slideInFromTop;}
+.image-wrapper-bottom > .image-group {animation: 0.5s ease-out 0s 1 slideInFromBottom;}
 
   /*2 small elements*/
 .spacer {height: 32px;}
@@ -233,8 +266,12 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
   overflow-wrap: anywhere;
 }
 
+.image-wrapper-top > .text-wrapper {animation: 0.5s ease-out 0s 1 slideInFromBottom;}
+.image-wrapper-bottom > .text-wrapper {animation: 0.5s ease-out 0s 1 slideInFromTop;}
+
 /*---Image View-------------------*/
 .image-view-wrapper {
+  align-items: center;
   display: flex;
   height: 80vh;
   justify-content: center;
@@ -248,12 +285,21 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
 
 .image-view {
   box-shadow: var(--shadow-dp12);
+  height: min-content;
+  max-width:100%;
+  max-height:100%;
+  pointer-events: all;
   transition: .04s;
-  max-height: 80vh;
-  max-width: 80vw;
-  object-fit: scale-down;
+  width: min-content;
 }
 
 .image-preview {
+  transition: .15s box-shadow;
   border-radius: var(--radius);
+}
+
+.image-preview:hover {
+  box-shadow: var(--shadow-dp12);
+  cursor: pointer;
+  display: block;
 }
