@@ -9,6 +9,10 @@ const server = http.createServer((req, res) => {
 
   if (req.url === '/' || req.url === '/index.html') {
     filePath = path.join(__dirname, 'index.html');
+  } else if (req.url === '/styles.css') {
+    filePath = path.join(__dirname, 'styles.css');
+  } else if (req.url === '/script.js') {
+    filePath = path.join(__dirname, 'script.js');
   } else {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.end('404 - Not Found');
