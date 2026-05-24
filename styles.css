@@ -1,6 +1,7 @@
 /*
   Kühlschrank - styles.css
   Please sort all properties after Global alphabetically.
+  Elements are set down by 16px.
   Resting elements should not have shadows, only active ones (hover, focus, active); light angle is 45° from top, scattered up to 22.5°.
 */
 
@@ -57,8 +58,6 @@
 
 /*---Global------------------------*/
 * {
-  color: var(--text);
-  font-family: var(--font);
   scroll-behavior: smooth;
 }
 
@@ -70,6 +69,7 @@
 body {
   background: var(--dp0);
   color: var(--text);
+  font-family: var(--font);
   height: 100%;
   margin: 0;
   min-width: fit-content;
@@ -79,7 +79,7 @@ body {
   width: 100%;
 }
 
-h1, h2, h3, h4, h5, h6, p {color: var(--text);}
+h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
 
 .btn {
   align-items: center;
@@ -123,7 +123,7 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
   }
 }
 
-/*---Head--------------------------*/
+/*---Head/Foot---------------------*/
 .icon {
   height: 16px;
   width: 16px;
@@ -137,10 +137,28 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
   z-index: 101;
 }
 
+.title-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
 #title {
-  top: -28px;
+  margin: -4px;
   padding: 16px;
   position: fixed;
+  white-space: nowrap;
+}
+
+.year-indicator-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+#year-indicator {
+  bottom: 0px;
+  padding: 24px;
+  position: fixed;
+  white-space: nowrap;
 }
 
 #scrim {
@@ -160,7 +178,7 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
   height: 4px;
   overflow-x: inherit;
   margin: 0 16px;
-  transform: translateY(calc(50vh - 2px));
+  transform: translateY(calc(50vh + 14px));
 }
 
 #arrow-line {
@@ -194,10 +212,10 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
 .images {
   display: flex;
   gap: 16px;
-  left: 16px;
   margin: 0 16px;
   position: absolute;
   top: 64px;
+  transform: translateY(16px);
 }
 
 .image-wrapper {
@@ -206,15 +224,17 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
   flex-direction: column;
   height: calc(100vh - 128px);
 }
-.image-wrapper-top {
-  top: 64px;
-}
-.image-wrapper-bottom {
-  bottom: 64px;
-  justify-content: flex-end;
+.image-wrapper-bottom {justify-content: flex-end;}
+
+  /*1 year indicator*/
+.year-wrapper {justify-content: flex-end;}
+
+.year {
+  color: var(--text-variant);
+  margin: 16px;
 }
 
-  /*1 image group*/
+  /*2 image group*/
 .image-group {
   display: flex;
   flex-direction: column;
@@ -228,6 +248,17 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
   width: 128px;
 }
 
+.image-preview {
+  transition: .15s box-shadow;
+  border-radius: var(--radius);
+}
+
+.image-preview:hover {
+  box-shadow: var(--shadow-dp12);
+  cursor: pointer;
+  display: block;
+}
+
 .image-wrapper-top > .image-group {
   flex-direction: column-reverse;
   justify-content: flex-start;
@@ -236,8 +267,9 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
 .image-wrapper-top > .image-group {animation: 0.5s ease-out 0s 1 slideInFromTop;}
 .image-wrapper-bottom > .image-group {animation: 0.5s ease-out 0s 1 slideInFromBottom;}
 
-  /*2 small elements*/
+  /*3 small elements*/
 .spacer {height: 32px;}
+.year-spacer {height: calc(50vh - 80px);}
 
 .pointer {
   background: var(--text);
@@ -246,7 +278,7 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
   width: 4px;
 }
 
-  /*3 text*/
+  /*4 text*/
 .text-wrapper {
   display: flex;
   flex-direction: column;
@@ -291,15 +323,4 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
   pointer-events: all;
   transition: .04s;
   width: min-content;
-}
-
-.image-preview {
-  transition: .15s box-shadow;
-  border-radius: var(--radius);
-}
-
-.image-preview:hover {
-  box-shadow: var(--shadow-dp12);
-  cursor: pointer;
-  display: block;
 }
