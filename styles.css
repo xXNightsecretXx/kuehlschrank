@@ -72,8 +72,12 @@ body {
   background: var(--dp0);
   color: var(--text);
   font-family: var(--font);
-  height: 100dvh;
   margin: 0;
+  overflow-y: hidden;
+}
+
+#content {
+  height: 100dvh;
   overflow-x: auto;
   overflow-y: hidden;
   padding-right: 16px;
