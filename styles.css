@@ -76,6 +76,8 @@ body {
   overflow-y: hidden;
 }
 
+body html {height: 100dvh;}
+
 #content {
   height: 100dvh;
   overflow-x: auto;
