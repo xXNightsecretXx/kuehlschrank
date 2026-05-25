@@ -62,19 +62,27 @@ applyTheme(currentTheme());
 /*---Image View--------------------*/
 const previews = document.getElementsByClassName("image-preview");
 const images = document.getElementsByClassName("image-view");
+const captions = document.getElementsByClassName("caption");
 const scrim = document.getElementById("scrim");
 
 for (let i = 0; i < previews.length; i++) {
   previews[i].addEventListener("click", () => {
-    for (let j = 0; j < images.length; j++) {images[j].classList.add("hidden");} // hide all images
+    for (let j = 0; j < images.length; j++) {
+      captions[j].classList.add("hidden");
+      images[j].classList.add("hidden");
+    } // hide all images
 
+    captions[i].classList.remove("hidden"); // show corresponding caption
     images[i].classList.remove("hidden"); // show corresponding image
     scrim.classList.remove("hidden"); // show scrim
   });
 }
 
 scrim.addEventListener("click", () => {
-  for (let j = 0; j < images.length; j++) {images[j].classList.add("hidden");} // hide all images
+  for (let j = 0; j < images.length; j++) {
+    captions[j].classList.add("hidden");
+    images[j].classList.add("hidden");
+  } // hide all images and captions
   scrim.classList.add("hidden"); // hide scrim
 });
 

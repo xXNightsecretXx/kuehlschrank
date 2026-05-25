@@ -39,6 +39,7 @@
   --border-variant: #4f4f4f;
   --text:           #ededed;
   --text-variant:   #939393;
+  --caption:        #fff;
 }
 
 [data-theme="light"] {
@@ -54,6 +55,7 @@
   --border-variant: #cfcfcf;
   --text:           #121212;
   --text-variant:   #626262;
+  --caption:        #fff;
 }
 
 /*---Global------------------------*/
@@ -308,6 +310,8 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
 .image-view-wrapper {
   align-items: center;
   display: flex;
+  flex-direction: column;
+  gap: 12px;
   height: 80vh;
   justify-content: center;
   left: 10vw;
@@ -326,4 +330,9 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
   pointer-events: all;
   transition: .04s;
   width: min-content;
+}
+
+.caption {
+  color: var(--caption);
+  pointer-events: all;
 }
