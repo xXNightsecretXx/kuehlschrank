@@ -1,6 +1,7 @@
 /*
   Kühlschrank - styles.css
   Please sort all properties after Global alphabetically.
+  Elements are set down by 16px.
   Resting elements should not have shadows, only active ones (hover, focus, active); light angle is 45° from top, scattered up to 22.5°.
 */
 
@@ -38,6 +39,7 @@
   --border-variant: #4f4f4f;
   --text:           #ededed;
   --text-variant:   #939393;
+  --caption:        #fff;
 }
 
 [data-theme="light"] {
@@ -53,12 +55,11 @@
   --border-variant: #cfcfcf;
   --text:           #121212;
   --text-variant:   #626262;
+  --caption:        #fff;
 }
 
 /*---Global------------------------*/
 * {
-  color: var(--text);
-  font-family: var(--font);
   scroll-behavior: smooth;
 }
 
@@ -70,6 +71,7 @@
 body {
   background: var(--dp0);
   color: var(--text);
+  font-family: var(--font);
   height: 100%;
   margin: 0;
   min-width: fit-content;
@@ -79,7 +81,7 @@ body {
   width: 100%;
 }
 
-h1, h2, h3, h4, h5, h6, p {color: var(--text);}
+h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
 
 .btn {
   align-items: center;
@@ -137,10 +139,32 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
   z-index: 101;
 }
 
-#title {
-  top: -28px;
-  padding: 16px;
+.title-wrapper {
+  display: flex;
+  justify-content: center;
   position: fixed;
+  width: 100%;
+}
+
+#title {
+  margin: -4px;
+  padding-top: 16px;
+  position: fixed;
+  white-space: nowrap;
+}
+
+.year-indicator-wrapper {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  width: 100%;
+}
+
+#year-indicator {
+  bottom: 0px;
+  padding-bottom: 8px;
+  position: fixed;
+  white-space: nowrap;
 }
 
 #scrim {
@@ -194,38 +218,50 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
 .images {
   display: flex;
   gap: 16px;
-  left: 16px;
   margin: 0 16px;
   position: absolute;
-  top: 64px;
+  top: 68px;
 }
 
 .image-wrapper {
   align-items: center;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 128px);
+  height: calc(100vh - 136px);
 }
-.image-wrapper-top {
-  top: 64px;
-}
-.image-wrapper-bottom {
-  bottom: 64px;
-  justify-content: flex-end;
+.image-wrapper-bottom {flex-direction: column-reverse;}
+
+  /*1 year indicator*/
+.year-wrapper {justify-content: flex-end;}
+
+.year {
+  color: var(--text-variant);
+  margin: 16px;
 }
 
-  /*1 image group*/
+  /*2 image group*/
 .image-group {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  height: calc(50vh - 96px);
-  margin: -18px;
+  height: calc(50vh - 100px);
+  margin: 0 -4px -12px;
   overflow-x: visible;
   overflow-y: auto;
-  padding: 18px;
+  padding: 0 4px 12px;
   scrollbar-width: none;
   width: 128px;
+}
+
+.image-preview {
+  transition: .15s box-shadow;
+  border-radius: var(--radius);
+}
+
+.image-preview:hover {
+  box-shadow: var(--shadow-dp8);
+  cursor: pointer;
+  display: block;
 }
 
 .image-wrapper-top > .image-group {
@@ -236,8 +272,9 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
 .image-wrapper-top > .image-group {animation: 0.5s ease-out 0s 1 slideInFromTop;}
 .image-wrapper-bottom > .image-group {animation: 0.5s ease-out 0s 1 slideInFromBottom;}
 
-  /*2 small elements*/
+  /*3 small elements*/
 .spacer {height: 32px;}
+.year-spacer {height: calc(50vh - 84px);}
 
 .pointer {
   background: var(--text);
@@ -246,7 +283,7 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
   width: 4px;
 }
 
-  /*3 text*/
+  /*4 text*/
 .text-wrapper {
   display: flex;
   flex-direction: column;
@@ -273,6 +310,8 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
 .image-view-wrapper {
   align-items: center;
   display: flex;
+  flex-direction: column;
+  gap: 12px;
   height: 80vh;
   justify-content: center;
   left: 10vw;
@@ -293,13 +332,7 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text);}
   width: min-content;
 }
 
-.image-preview {
-  transition: .15s box-shadow;
-  border-radius: var(--radius);
-}
-
-.image-preview:hover {
-  box-shadow: var(--shadow-dp12);
-  cursor: pointer;
-  display: block;
+.caption {
+  color: var(--caption);
+  pointer-events: all;
 }

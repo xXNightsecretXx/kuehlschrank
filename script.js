@@ -1,3 +1,5 @@
+let centerX = window.innerWidth / 2;
+
 function $$(selector) {
   return document.querySelectorAll(selector);
 };
@@ -7,11 +9,10 @@ const horizontal = document.scrollingElement
 window.addEventListener("wheel", (e) => {
   const target = e.target.closest(".image-group");
   if (target) {
-    if (target.scrollHeight > target.clientHeight) {
-      return;
-    }
+    if (target.scrollHeight > target.clientHeight) {return;}
     e.preventDefault();
     horizontal.scrollLeft += e.deltaY;
+
     return;
   }
   
@@ -61,18 +62,49 @@ applyTheme(currentTheme());
 /*---Image View--------------------*/
 const previews = document.getElementsByClassName("image-preview");
 const images = document.getElementsByClassName("image-view");
+const captions = document.getElementsByClassName("caption");
 const scrim = document.getElementById("scrim");
 
 for (let i = 0; i < previews.length; i++) {
   previews[i].addEventListener("click", () => {
-    for (let j = 0; j < images.length; j++) {images[j].classList.add("hidden");} // hide all images
+    for (let j = 0; j < images.length; j++) {
+      captions[j].classList.add("hidden");
+      images[j].classList.add("hidden");
+    } // hide all images
 
+    captions[i].classList.remove("hidden"); // show corresponding caption
     images[i].classList.remove("hidden"); // show corresponding image
     scrim.classList.remove("hidden"); // show scrim
   });
 }
 
 scrim.addEventListener("click", () => {
-  for (let j = 0; j < images.length; j++) {images[j].classList.add("hidden");} // hide all images
+  for (let j = 0; j < images.length; j++) {
+    captions[j].classList.add("hidden");
+    images[j].classList.add("hidden");
+  } // hide all images and captions
   scrim.classList.add("hidden"); // hide scrim
 });
+
+/*---Auto Year---------------------*/
+function setCurrentYear() {
+  const years = document.getElementsByClassName("year");
+  const indicator = document.getElementById("year-indicator");
+  const currentYear = getRightmostLeftElement(years).innerHTML;
+  indicator.innerHTML = currentYear;
+}
+
+function getRightmostLeftElement(divs) { // gets the rightmost div left the center
+  let result;
+
+  for (const div of divs) {
+    const divPos = div.getBoundingClientRect().left + div.getBoundingClientRect().width / 2;
+
+    if (divPos < centerX) {result = div;} else {break;}
+  }
+  return result;
+}
+
+setCurrentYear();
+window.addEventListener("scroll", (e) => {setCurrentYear()})
+window.addEventListener("resize", (e) => {centerX = window.innerWidth / 2; setCurrentYear()})
