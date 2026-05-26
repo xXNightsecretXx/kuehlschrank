@@ -59,6 +59,16 @@ $$("[data-theme-toggle]").forEach(btn =>
 
 applyTheme(currentTheme());
 
+/*---Title Scaling-----------------*/
+const titleWidth = 396; // hardcoded because it's easier than calculating it
+const title = document.getElementById("title");
+
+function resizeTitle() {
+  if (window.innerWidth < 396 + 32) {
+    title.style.fontSize = (window.innerWidth - 32) / titleWidth * 2 + "em";
+  }
+}
+
 /*---Image View--------------------*/
 const previews = document.getElementsByClassName("image-preview");
 const images = document.getElementsByClassName("image-view");
@@ -107,4 +117,4 @@ function getRightmostLeftElement(divs) { // gets the rightmost div left the cent
 
 setCurrentYear();
 window.addEventListener("scroll", (e) => {setCurrentYear()})
-window.addEventListener("resize", (e) => {centerX = window.innerWidth / 2; setCurrentYear()})
+window.addEventListener("resize", (e) => {centerX = window.innerWidth / 2; setCurrentYear(); resizeTitle()})
