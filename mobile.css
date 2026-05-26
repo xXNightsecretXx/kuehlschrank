@@ -1,4 +1,4 @@
-@media (max-device-width: 1024px) {
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
 .icon {
   height: 48px;
   width: 48px;
@@ -6,7 +6,20 @@
 
 .btn-icon {
   bottom: 12px;
-  padding: 8px;
+  padding: 9px;
+  right: 12px;
+  top: auto;
+}
+}
+
+@media only screen and (max-device-width: 7670px) {
+.icon {
+  height: 32px;
+  width: 32px;
+}
+
+.btn-icon {
+  bottom: 12px;
   right: 12px;
   top: auto;
 }
