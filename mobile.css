@@ -57,5 +57,5 @@
 
 /* Way too small Windows */
 @media (max-width: 128px) or (max-height: 224px) {
-#size-warning {display: auto;}
+#size-warning {display: block;}
 }
