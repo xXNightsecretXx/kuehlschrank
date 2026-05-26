@@ -1,5 +1,5 @@
-@media (max-device-width: 1024px) {
-
+/* iPad */
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
 .icon {
   height: 48px;
   width: 48px;
@@ -7,18 +7,55 @@
 
 .btn-icon {
   bottom: 12px;
-  padding: 8px;
+  padding: 9px;
   right: 12px;
   top: auto;
 }
-
 }
 
-@media (max-width: 512px) {
+/* Smartphone */
+@media only screen and (max-device-width: 767px) {
+.icon {
+  height: 32px;
+  width: 32px;
+}
 
+.btn-icon {
+  bottom: 12px;
+  right: 12px;
+  top: auto;
+}
+}
+
+/* Really thin Smartphone */
+@media (max-device-width: 1024px) and (max-width: 224px) {
+.icon {
+  height: 16px;
+  width: 16px;
+}
+
+.btn-icon {
+  bottom: 6px;
+  padding: 6px;
+  right: 8px;
+}
+}
+
+/* Small Windows */
+@media (max-width: 512px) {
 .btn-icon {
   bottom: 6px;
   top: auto;
 }
+}
 
+@media (max-height: 320px) {
+.year {
+  margin: 16px 16px 0px;
+}
+}
+
+/* Way too small Windows */
+@media (max-width: 128px) or (max-height: 224px) {
+#size-warning {display: block;}
 }
