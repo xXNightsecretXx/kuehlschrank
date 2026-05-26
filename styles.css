@@ -60,6 +60,8 @@
 
 /*---Global------------------------*/
 * {
+  scrollbar-color: var(--text-variant) var(--dp0);
+  scrollbar-width: thin;
   scroll-behavior: smooth;
 }
 
@@ -243,7 +245,6 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
   color: var(--text-variant);
   margin: 16px;
   overflow-y: auto;
-  scrollbar-width: thin;
 }
 
   /*2 image group*/
@@ -286,7 +287,6 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
   height: calc(50dvh - 84px);
   min-height: calc(50dvh - 84px);
   overflow: auto;
-  scrollbar-width: thin;
 }
 
 .pointer {
@@ -305,7 +305,6 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
   justify-content: center;
   overflow-y: auto;
   padding: 16px 0;
-  scrollbar-width: thin;
   text-align: center;
   width: 100%;
 }
@@ -353,5 +352,4 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
   color: var(--caption);
   overflow: auto;
   pointer-events: all;
-  scrollbar-width: thin;
 }
