@@ -69,6 +69,8 @@ function resizeTitle() {
   }
 }
 
+resizeTitle(); // resize trigger is at the bottom for performance
+
 /*---Image View--------------------*/
 const previews = document.getElementsByClassName("image-preview");
 const images = document.getElementsByClassName("image-view");
