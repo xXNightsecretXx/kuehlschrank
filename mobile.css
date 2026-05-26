@@ -12,13 +12,6 @@
 }
 }
 
-@media (max-width: 512px) {
-.btn-icon {
-  bottom: 6px;
-  top: auto;
-}
-}
-
 @media (max-device-width: 1024px) and (max-width: 224px) {
 .icon {
   height: 16px;
@@ -29,5 +22,18 @@
   bottom: 6px;
   padding: 6px;
   right: 8px;
+}
+}
+
+@media (max-width: 512px) {
+.btn-icon {
+  bottom: 6px;
+  top: auto;
+}
+}
+
+@media (max-height: 320px) {
+.year {
+  margin: 16px 16px 0px;
 }
 }
