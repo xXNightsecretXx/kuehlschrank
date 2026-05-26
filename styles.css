@@ -72,13 +72,18 @@ body {
   background: var(--dp0);
   color: var(--text);
   font-family: var(--font);
-  height: 100%;
   margin: 0;
-  min-width: fit-content;
+  overflow-y: hidden;
+}
+
+body html {height: 100dvh;}
+
+#content {
+  height: 100dvh;
   overflow-x: auto;
   overflow-y: hidden;
-  position: auto;
-  width: 100%;
+  padding-right: 16px;
+  width: min-content;
 }
 
 h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
@@ -148,6 +153,7 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
 
 #title {
   margin: -4px;
+  max-width: 100vw;
   padding-top: 16px;
   position: fixed;
   white-space: nowrap;
@@ -169,11 +175,11 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
 
 #scrim {
   background: var(--scrim);
-  height: 100%;
+  height: 100dvh;
   left: 0;
   position: fixed;
   top: 0;
-  width: 100%;
+  width: 100vw;
   z-index: 100;
 }
 
@@ -184,7 +190,7 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
   height: 4px;
   overflow-x: inherit;
   margin: 0 16px;
-  transform: translateY(calc(50vh - 2px));
+  transform: translateY(calc(50dvh - 2px));
 }
 
 #arrow-line {
@@ -227,7 +233,7 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
   align-items: center;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 136px);
+  height: calc(100dvh - 136px);
 }
 .image-wrapper-bottom {flex-direction: column-reverse;}
 
@@ -244,7 +250,7 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
   display: flex;
   flex-direction: column;
   gap: 16px;
-  height: calc(50vh - 100px);
+  height: calc(50dvh - 100px);
   margin: 0 -4px -12px;
   overflow-x: visible;
   overflow-y: auto;
@@ -274,7 +280,7 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
 
   /*3 small elements*/
 .spacer {height: 32px;}
-.year-spacer {height: calc(50vh - 84px);}
+.year-spacer {height: calc(50dvh - 84px);}
 
 .pointer {
   background: var(--text);
@@ -312,10 +318,10 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
   display: flex;
   flex-direction: column;
   gap: 12px;
-  height: 80vh;
+  height: 80dvh;
   justify-content: center;
   left: 10vw;
-  top: 10vh;
+  top: 10dvh;
   pointer-events: none;
   position: fixed;
   width: 80vw;
@@ -325,8 +331,8 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
 .image-view {
   box-shadow: var(--shadow-dp12);
   height: min-content;
-  max-width:100%;
-  max-height:100%;
+  max-width: 100%;
+  max-height: 100%;
   pointer-events: all;
   transition: .04s;
   width: min-content;
