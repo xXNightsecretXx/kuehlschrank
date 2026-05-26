@@ -184,6 +184,19 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
   z-index: 100;
 }
 
+#size-warning {
+  background-color: var(--dp0);
+  display: none;
+  font-size: 10vmin;
+  height: 100dvh;
+  left: 0;
+  overflow: auto;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  z-index: 103;
+}
+
 /*---Arrow-------------------------*/
 .arrow {
   align-items: center;
