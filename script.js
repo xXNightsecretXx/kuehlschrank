@@ -7,7 +7,7 @@ function $$(selector) {
 /*---Horizontal Scroll-------------*/
 const horizontal = document.scrollingElement
 window.addEventListener("wheel", (e) => {
-  const target = e.target.closest(".image-group");
+  const target = e.target.closest(".image-group, .text-wrapper");
   if (target) {
     if (target.scrollHeight > target.clientHeight) {return;}
     e.preventDefault();

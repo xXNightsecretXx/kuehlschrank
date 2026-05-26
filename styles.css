@@ -242,6 +242,8 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
 .year {
   color: var(--text-variant);
   margin: 16px;
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
 
   /*2 image group*/
@@ -251,6 +253,7 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
   gap: 16px;
   height: calc(50dvh - 100px);
   margin: 0 -4px -12px;
+  min-height: calc(50dvh - 100px);
   overflow-x: visible;
   overflow-y: auto;
   padding: 0 4px 12px;
@@ -278,13 +281,19 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
 .image-wrapper-bottom > .image-group {animation: 0.5s ease-out 0s 1 slideInFromBottom;}
 
   /*3 small elements*/
-.spacer {height: 32px;}
-.year-spacer {height: calc(50dvh - 84px);}
+.spacer {height: 32px; min-height: 32px;}
+.year-spacer {
+  height: calc(50dvh - 84px);
+  min-height: calc(50dvh - 84px);
+  overflow: auto;
+  scrollbar-width: thin;
+}
 
 .pointer {
   background: var(--text);
   border-radius: 2px;
   height: 16px;
+  min-height: 16px;
   width: 4px;
 }
 
@@ -294,7 +303,9 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
   flex-direction: column;
   gap: 8px;
   justify-content: center;
+  overflow-y: auto;
   padding: 16px 0;
+  scrollbar-width: thin;
   text-align: center;
   width: 100%;
 }
@@ -306,6 +317,7 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
   margin: 0;
   max-width: 192px;
   overflow-wrap: anywhere;
+  width: max-content;
 }
 
 .image-wrapper-top > .text-wrapper {animation: 0.5s ease-out 0s 1 slideInFromBottom;}
