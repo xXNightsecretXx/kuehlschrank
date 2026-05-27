@@ -32,7 +32,10 @@ resizeArrow();
 
 /*---Theme-------------------------*/
 function currentTheme() {
-  const theme = document.documentElement.dataset.theme;
+  let theme = document.documentElement.dataset.theme;
+  if (theme === "light" || theme === "dark") return theme;
+
+  theme = localStorage.theme;
   if (theme === "light" || theme === "dark") return theme;
 
   return window.matchMedia?.("(prefers-color-scheme: light)").matches ?
