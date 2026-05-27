@@ -148,6 +148,12 @@ window.addEventListener("resize", (e) => {
 const scrollMargin = 4; // margin of Page Up/Down for readability
 const scrollSpeed = 40; // arrow key scroll speed
 window.addEventListener("keydown", (e) => {
+  if (e.key == "Escape") {
+    hideImages();
+    $$("[data-variable-tabindex]").forEach(el => el.tabIndex = 0);
+    scrim.classList.add("hidden"); // hide scrim
+  }
+  
   const target = e.target.closest(".caption,.image-group,.text-wrapper,.year");
   if (target) {return;}
 
@@ -176,9 +182,5 @@ window.addEventListener("keydown", (e) => {
       e.preventDefault();
       horizontal.scrollLeft = horizontal.scrollWidth - window.innerWidth;
       break;
-    case "Escape":
-      hideImages();
-      $$("[data-variable-tabindex]").forEach(el => el.tabIndex = 0);
-      scrim.classList.add("hidden"); // hide scrim
   }
 });
