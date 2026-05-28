@@ -69,14 +69,22 @@ const server = http.createServer((req, res) => {
     stats = fs.lstatSync(filePath);
   } catch (e) {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
-    res.write('404 Not Found\n');
+    res.write('404 - Not Found\n');
     res.end();
     return;
   }
 
   if (stats.isDirectory()) {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
-    res.write('404 Not Found\n');
+    res.write('404 - Not Found\n');
+    res.end();
+    return;
+  }
+
+  const blockList = [,"/assets/imgconfig.json", "/old/index-old.html"]
+  if (blockList.indexOf(filePath)) {
+    res.writeHead(403, { 'Content-Type': 'text/plain' });
+    res.write('403 - Forbidden\n');
     res.end();
     return;
   }
