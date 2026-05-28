@@ -41,7 +41,7 @@ async function buildTimeline() {
     this isn't even callback hell
     hoursWastedOnUnderstandingAndWritingTs = 3;
   */
-  paths = fsp.readdir("assets/preview").then(years => {return (
+  fsp.readdir("assets/preview").then(years => {return (
     Promise.all(years.map(year => {return fsp.readdir(`assets/preview/${year}`).then(dates => {return (            /*  year promises */
       Promise.all(dates.map(date => {return fsp.readdir(`assets/preview/${year}/${date}`).then(images => {return ( /*  date promises */
         Promise.all(images.map(image => {                                                                          /* image promises */
@@ -49,7 +49,8 @@ async function buildTimeline() {
         }))
       );});}))
     );});}))
-  );});
+  );})
+  .then(paths => console.log(paths));
 
   let str = '';
   str += yearElement("2026");
