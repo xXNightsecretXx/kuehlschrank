@@ -2,14 +2,53 @@ const fs = require("fs");
 const http = require("http");
 const path = require("path");
 
+function yearElement(year) {
+  return '<div class="year-wrapper image-wrapper">\
+<h1 class="year"><!--{{YEAR}}--></h1>\
+<div class="pointer"></div><div class="pointer"></div><div class="year-spacer"></div></div>'
+  .replace("<!--{{YEAR}}-->", year);
+}
+
+function dateElement(date, desc, imageURLs, imageAlts) {
+  let str = '<div class="image-wrapper image-wrapper-bottom">\
+<div class="image-group" tabindex=0 data-variable-tabindex><!--{{IMAGES}}--></div>\
+<div class="spacer"></div><div class="pointer"></div><div class="text-wrapper">\
+  <h3 class="date"><!--{{DATE}}--></h3>\
+  <p class="description"><!--{{DESC}}--></p>\
+</div></div>';
+
+  date = date.slice(3, 5) + "." + date.slice(0, 2) + ".";
+
+  let imageAlt;
+  let imgStr = "";
+  imageURLs.forEach((imageURL, i) => {
+    imageAlt = imageAlts[i];
+    imgStr = imgStr + '<img class="image-preview" tabindex=0 data-variable-tabindex src="imageURL" alt="imageAlt">'
+    .replace("imageURL", imageURL)
+    .replace("imageAlt", imageAlt);
+  });
+  
+  str = str
+  .replace("<!--{{IMAGES}}-->", imgStr)
+  .replace("<!--{{DATE}}-->", date)
+  .replace("<!--{{DESC}}-->", desc);
+  return str;
+}
+
 async function buildTimeline() {
-  return "string"
+  let str = '';
+  str += yearElement("2026");
+  str += dateElement("05-23", "Milch seit August 2025 abgelaufen",
+    ["assets/preview/2026/05-23/1.webp", "assets/preview/2026/05-23/2.webp"],
+    ["Milch abgelaufen seit August 2025", "Eisflaschen"]
+  );
+  return str;
 }
 
 async function templateReplace(str, replace) {
   if (replace == "<!--{{TIMELINE}}-->") {
-    const newStr = str.replace(replace, await buildTimeline())
-    return newStr
+    const newStr = str.replace(replace, await buildTimeline());
+    return newStr;
   }
 }
 
