@@ -1,4 +1,5 @@
 const fs = require("fs");
+const fsp = require("fs").promises;
 const http = require("http");
 const path = require("path");
 
@@ -30,6 +31,26 @@ function dateElement(date, desc, imageURLs, imageAlts) {
 }
 
 async function buildTimeline() {
+
+  /*
+    I know this looks scary, but stay:
+      think: for each year/date/image look up the inner directories
+      then return the path bottom-up
+      also just ignore the brackets
+
+    this isn't even callback hell
+    hoursWastedOnUnderstandingAndWritingTs = 3;
+  */
+  paths = fsp.readdir("assets/preview").then(years => {return (
+    Promise.all(years.map(year => {return fsp.readdir(`assets/preview/${year}`).then(dates => {return (            /*  year promises */
+      Promise.all(dates.map(date => {return fsp.readdir(`assets/preview/${year}/${date}`).then(images => {return ( /*  date promises */
+        Promise.all(images.map(image => {                                                                          /* image promises */
+          return `assets/preview/${year}/${date}/${image}`;
+        }))
+      );});}))
+    );});}))
+  );});
+
   let str = '';
   str += yearElement("2026");
   str += dateElement("05-23", "Milch seit August 2025 abgelaufen",
