@@ -81,8 +81,8 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  const blockList = [,"/assets/imgconfig.json", "/old/index-old.html"]
-  if (blockList.indexOf(filePath)) {
+  const blockList = ["/assets/imgconfig.json", "/old/index-old.html"]
+  if (blockList.indexOf(pathname) > -1) {
     res.writeHead(403, { 'Content-Type': 'text/plain' });
     res.write('403 - Forbidden\n');
     res.end();
