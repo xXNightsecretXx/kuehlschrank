@@ -2,6 +2,17 @@ const fs = require("fs");
 const http = require("http");
 const path = require("path");
 
+async function buildTimeline() {
+  return "string"
+}
+
+async function templateReplace(str, replace) {
+  if (replace == "<!--{{TIMELINE}}-->") {
+    const newStr = str.replace(replace, await buildTimeline())
+    return newStr
+  }
+}
+
 const PORT = 3000;
 
 const server = http.createServer((req, res) => {
@@ -40,13 +51,25 @@ const server = http.createServer((req, res) => {
     }
 
     let contentType = "text/plain";
-    if (filePath.endsWith(".html") || filePath.endsWith(".htm")) contentType = "text/html";
+
+    if (filePath.endsWith(".html") || filePath.endsWith(".htm")) {
+      contentType = "text/html";
+      content = templateReplace(content.toString("utf-8"), "<!--{{TIMELINE}}-->");
+      content.then(resolve => {
+        res.writeHead(200, { "Content-Type": contentType });
+        res.write(resolve);
+        res.end();
+      })
+      return;
+    }
+
     if (filePath.endsWith(".css")) contentType = "text/css";
     if (filePath.endsWith(".js")) contentType = "application/javascript";
     if (filePath.endsWith(".webp")) contentType = "image/webp";
 
     res.writeHead(200, { "Content-Type": contentType });
-    res.end(content);
+    res.write(content);
+    res.end();
   });
 });
 
