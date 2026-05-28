@@ -21,12 +21,13 @@ function dateElement(date, desc, imageURLs, imageAlts) {
 
   let imageAlt;
   let imgStr = "";
-  imageURLs.forEach((imageURL, i) => {
+  let i = 0
+  for (imageURL of imageURLs) {
     imageAlt = imageAlts[i];
     imgStr = imgStr + '<img class="image-preview" tabindex=0 data-variable-tabindex src="imageURL" alt="imageAlt">'
     .replace("imageURL", imageURL)
     .replace("imageAlt", imageAlt);
-  });
+  i++}
   
   str = str
   .replace("<!--{{IMAGES}}-->", imgStr)
