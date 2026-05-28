@@ -3,20 +3,12 @@ const http = require("http");
 const path = require("path");
 
 function yearElement(year) {
-  return '<div class="year-wrapper image-wrapper">\
-<h1 class="year"><!--{{YEAR}}--></h1>\
-<div class="pointer"></div><div class="pointer"></div><div class="year-spacer"></div></div>'
-  .replace("<!--{{YEAR}}-->", year);
+  return `<div class="year-wrapper image-wrapper">\
+<h1 class="year">${year}</h1>\
+<div class="pointer"></div><div class="pointer"></div><div class="year-spacer"></div></div>`
 }
 
 function dateElement(date, desc, imageURLs, imageAlts) {
-  let str = '<div class="image-wrapper image-wrapper-bottom">\
-<div class="image-group" tabindex=0 data-variable-tabindex><!--{{IMAGES}}--></div>\
-<div class="spacer"></div><div class="pointer"></div><div class="text-wrapper">\
-  <h3 class="date"><!--{{DATE}}--></h3>\
-  <p class="description"><!--{{DESC}}--></p>\
-</div></div>';
-
   date = date.slice(3, 5) + "." + date.slice(0, 2) + ".";
 
   let imageAlt;
@@ -24,15 +16,16 @@ function dateElement(date, desc, imageURLs, imageAlts) {
   let i = 0
   for (imageURL of imageURLs) {
     imageAlt = imageAlts[i];
-    imgStr = imgStr + '<img class="image-preview" tabindex=0 data-variable-tabindex src="imageURL" alt="imageAlt">'
-    .replace("imageURL", imageURL)
-    .replace("imageAlt", imageAlt);
+    imgStr = imgStr + `<img class="image-preview" tabindex=0 data-variable-tabindex src="${imageURL}" alt="${imageAlt}">`
   i++}
-  
-  str = str
-  .replace("<!--{{IMAGES}}-->", imgStr)
-  .replace("<!--{{DATE}}-->", date)
-  .replace("<!--{{DESC}}-->", desc);
+
+  let str = `<div class="image-wrapper image-wrapper-bottom">\
+<div class="image-group" tabindex=0 data-variable-tabindex>${imgStr}</div>\
+<div class="spacer"></div><div class="pointer"></div><div class="text-wrapper">\
+  <h3 class="date">${date}</h3>\
+  <p class="description">${desc}</p>\
+</div></div>`;
+
   return str;
 }
 
