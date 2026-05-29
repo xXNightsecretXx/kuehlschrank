@@ -1,6 +1,6 @@
 {
   "name": "kuehlschrank",
-  "version": "2.3.1",
+  "version": "3.0.0",
   "description": "Farning Kühlschrankarchiv",
   "keywords": [
     "nodejs"
@@ -16,5 +16,8 @@
   "scripts": {
     "test": "echo test",
     "start": "node server.js"
+  },
+  "bugs": {
+    "url": "https://gitlab.platform4.me/lukas/kuehlschrank/issues"
   }
 }
