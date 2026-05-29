@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<!--
+  This is the old index.html file before the projects used node.js to
+  automatically insert the elements. This file is unused and only for 
+  future reference and MUST NOT be exposed.
+-->
+
+<html lang="de">
+  <head>
+    <title>Farning Kühlschrankarchiv</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="height=device-height, initial-scale=1.0, minimum-scale=1.0">
+    <meta name="description" content="Farning Kühlschrankarchiv">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="mobile.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+  </head>
+
+  <body>
+    <div id="content">
+      <section>
+        <button id="theme-toggle" type="button" class="btn btn-icon">
+          <svg id="icon-sun" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg id="icon-moon" class="icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        </button>
+      </section>
+      <div id="scrim" class="hidden" tabindex=0></div>
+      <main>
+        <div class="timeline">
+          <div class="arrow">
+            <div id="arrow-line"></div>
+            <div id="arrow-head-top"></div>
+            <div id="arrow-head-bottom"></div>
+          </div>
+          <div class="images">
+            <div class="year-wrapper image-wrapper">
+              <h1 class="year">2025</h1>
+              <div class="pointer"></div>
+              <div class="pointer"></div>
+              <div class="year-spacer"></div>
+            </div>
+
+            <div class="image-wrapper image-wrapper-top">
+              <div class="image-group" tabindex=0 data-variable-tabindex>
+                <img class="image-preview" tabindex=0 data-variable-tabindex src="assets/preview/2025/07-19/1.webp" alt="Schwarze Banane">
+              </div>
+              <div class="spacer"></div>
+              <div class="pointer"></div>
+              <div class="text-wrapper">
+                <h3 class="date">19.07.</h3>
+                <p class="description">Schwarze Banane</p>
+              </div>
+            </div>
+            
+            <div class="year-wrapper image-wrapper">
+              <h1 class="year">2026</h1>
+              <div class="pointer"></div>
+              <div class="pointer"></div>
+              <div class="year-spacer"></div>
+            </div>
+
+            <div class="image-wrapper image-wrapper-bottom">
+              <div class="image-group" tabindex=0 data-variable-tabindex>
+                <img class="image-preview" tabindex=0 data-variable-tabindex src="assets/preview/2026/05-23/1.webp" alt="Milch abgelaufen seit August 2025">
+                <img class="image-preview" tabindex=0 data-variable-tabindex src="assets/preview/2026/05-23/2.webp" alt="Eisflaschen">
+              </div>
+              <div class="spacer"></div>
+              <div class="pointer"></div>
+              <div class="text-wrapper">
+                <h3 class="date">23.05.</h3>
+                <p class="description">Milch seit August 2025 abgelaufen</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="image-view-wrapper">
+          <img class="image-view hidden" loading="lazy" src="assets/img/2025/07-19/1.webp" alt="Schwarze Banane">
+          <img class="image-view hidden" loading="lazy" src="assets/img/2026/05-23/1.webp" alt="Milch abgelaufen seit August 2025">
+          <img class="image-view hidden" loading="lazy" src="assets/img/2026/05-23/2.webp" alt="Eisflaschen">
+
+          <p class="caption hidden">Der Lachs sieht auch nicht mehr so gut aus</p>
+          <p class="caption hidden"></p>
+          <p class="caption hidden">Da ist noch Kohlensäure drin</p>
+        </div>
+
+        <div class="title-wrapper"><h1 id="title">Farning Kühlschrankarchiv</h1></div>
+        <div class="year-indicator-wrapper"><h2 id="year-indicator"></h2></div>
+      </main>
+      <script src="script.js" defer></script>
+    </div>
+    <div id="size-warning"><p>Dein Gerät/Fenster ist leider zu klein, um die Seite richtig anzuzeigen.<br>PS: Wie hast du es ÜBERHAUPT GESCHAFFT einen Browser zu BENUTZEN?!</p></div>
+  </body>
+</html>
