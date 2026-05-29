@@ -12,15 +12,15 @@ function yearElement(year) {
 function dateElement(date, desc, imageURLs, imageAlts) {
   date = date.slice(3, 5) + "." + date.slice(0, 2) + ".";
 
-  let imageAlt;
   let imgStr = "";
-  let i = 0
+  let imageAlt;
+  let i = 0;
   for (imageURL of imageURLs) {
     imageAlt = imageAlts[i];
     imgStr = imgStr + `<img class="image-preview" tabindex=0 data-variable-tabindex src="${imageURL}" alt="${imageAlt}">`
   i++}
 
-  let str = `<div class="image-wrapper image-wrapper-bottom">\
+  let str = `<div class="image-wrapper image-wrapper-\${{SIDE}}\$">\
 <div class="image-group" tabindex=0 data-variable-tabindex>${imgStr}</div>\
 <div class="spacer"></div><div class="pointer"></div><div class="text-wrapper">\
   <h3 class="date">${date}</h3>\
@@ -30,41 +30,74 @@ function dateElement(date, desc, imageURLs, imageAlts) {
   return str;
 }
 
+function imageElements(path, images, alts, descs) {
+  let imgStr = "";
+  let alt;
+  let desc;
+  let i = 0;
+  for (image of images) {
+    alt = alts[i];
+    desc = descs[i];
+    imgStr = imgStr + `<img class="image-view hidden" loading="lazy" src="${path + image}" alt="${alt}"><p class="caption hidden">${desc}</p>`
+  i++}
+  return imgStr;
+}
+
+//cursed basically-oneliner
 async function buildTimeline() {
+  const imageJSON = JSON.parse(await fsp.readFile("assets/imgconfig.json", "utf-8"));
 
   /*
-    I know this looks scary, but stay:
+    I know this looks scary:
       think: for each year/date/image look up the inner directories
       then return the path bottom-up
       also just ignore the brackets
 
+     |for each year
+     | |for each date
+     | | |for each image
+     | |then
+     | | |
+     |then
+     | |
+
     this isn't even callback hell
     hoursWastedOnUnderstandingAndWritingTs = 3;
   */
-  fsp.readdir("assets/preview").then(years => {return (
+  return fsp.readdir("assets/preview").then(years => {return (
     Promise.all(years.map(year => {return fsp.readdir(`assets/preview/${year}`).then(dates => {return (            /*  year promises */
       Promise.all(dates.map(date => {return fsp.readdir(`assets/preview/${year}/${date}`).then(images => {return ( /*  date promises */
         Promise.all(images.map(image => {                                                                          /* image promises */
           return `assets/preview/${year}/${date}/${image}`;
-        }))
+        })).then(imageURLs => {return dateElement(
+          date, imageJSON[year][date][0]["alts"][0], imageURLs, imageJSON[year][date][0]["alts"]
+        );})
+      );});}))
+    );}).then(dates => {
+      return [yearElement(year), dates];
+    });}))
+  );})
+  .then(htmlList => {return htmlList.flat(Infinity).join("").replace(/\$\{\{SIDE\}\}\$([^$]*)\$\{\{SIDE\}\}\$/g, 'top$1bottom');});
+}
+
+async function buildImageView() {
+  const imageJSON = JSON.parse(await fsp.readFile("assets/imgconfig.json", "utf-8"));
+
+  return fsp.readdir("assets/img").then(years => {return (
+    Promise.all(years.map(year => {return fsp.readdir(`assets/img/${year}`).then(dates => {return (            /*  year promises */
+      Promise.all(dates.map(date => {return fsp.readdir(`assets/img/${year}/${date}`).then(images => {return ( /*  date promises */
+        imageElements(`assets/img/${year}/${date}/`, images, imageJSON[year][date][0]["alts"], imageJSON[year][date][0]["descriptions"])
       );});}))
     );});}))
   );})
-  .then(paths => console.log(paths));
-
-  let str = '';
-  str += yearElement("2026");
-  str += dateElement("05-23", "Milch seit August 2025 abgelaufen",
-    ["assets/preview/2026/05-23/1.webp", "assets/preview/2026/05-23/2.webp"],
-    ["Milch abgelaufen seit August 2025", "Eisflaschen"]
-  );
-  return str;
+  .then(htmlList => {return htmlList.flat(Infinity).join("");});
 }
 
 async function templateReplace(str, replace) {
   if (replace == "<!--{{TIMELINE}}-->") {
-    const newStr = str.replace(replace, await buildTimeline());
-    return newStr;
+    return str.replace(replace, await buildTimeline());
+  } else if (replace == "<!--{{IMAGE VIEW}}-->") {
+    return str.replace(replace, await buildImageView());
   }
 }
 
@@ -117,12 +150,13 @@ const server = http.createServer((req, res) => {
 
     if (filePath.endsWith(".html") || filePath.endsWith(".htm")) {
       contentType = "text/html";
-      content = templateReplace(content.toString("utf-8"), "<!--{{TIMELINE}}-->");
-      content.then(resolve => {
+      templateReplace(content.toString("utf-8"), "<!--{{TIMELINE}}-->")
+      .then(htmlStr => templateReplace(htmlStr, "<!--{{IMAGE VIEW}}-->"))
+      .then(htmlStr => {
         res.writeHead(200, { "Content-Type": contentType });
-        res.write(resolve);
+        res.write(htmlStr);
         res.end();
-      })
+      });
       return;
     }
 
