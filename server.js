@@ -3,6 +3,8 @@ const fsp = require("fs").promises;
 const http = require("http");
 const path = require("path");
 
+const PASSWORD = "4c9c9d7808645b8263f1f356d1be85d0464b57a8fdf4a7907975c4841587a12f4c6559eae6cd46dcb463b286d2831e8bf41e91370f9880bf5dd31255ede31a49";
+
 function yearElement(year) {
   return `<div class="year-wrapper image-wrapper">\
 <h1 class="year">${year}</h1>\
@@ -104,70 +106,85 @@ async function templateReplace(str, replace) {
 const PORT = 3000;
 
 const server = http.createServer((req, res) => {
-  // parse URL
-  const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
-  let pathname = parsedUrl.pathname;
-  if (pathname === "/") {
-    pathname = "/index.html";
-  }
-  const filePath = path.join(__dirname, pathname);
+  if (req.method == "GET") {
+    console.log("\x1b[37m\x1b[44m HTTP \x1b[0m ["
+                + new Date().toTimeString().split(' ')[0] + "] " + (req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
+                + " \x1b[37m\x1b[42m GET \x1b[0m " + req.url);
 
-  // check if file exists and is not a directory
-  let stats;
-  try {
-    stats = fs.lstatSync(filePath);
-  } catch (e) {
-    res.writeHead(404, { 'Content-Type': 'text/plain' });
-    res.write('404 - Not Found\n');
-    res.end();
-    return;
-  }
+    // parse URL
+    const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
+    let pathname = parsedUrl.pathname;
+    if (pathname === "/") {
+      pathname = "/index.html";
+    }
+    const filePath = path.join(__dirname, pathname);
 
-  if (stats.isDirectory()) {
-    res.writeHead(404, { 'Content-Type': 'text/plain' });
-    res.write('404 - Not Found\n');
-    res.end();
-    return;
-  }
-
-  const blockList = ["/assets/imgconfig.json", "/old/index-old.html"]
-  if (blockList.indexOf(pathname) > -1) {
-    res.writeHead(403, { 'Content-Type': 'text/plain' });
-    res.write('403 - Forbidden\n');
-    res.end();
-    return;
-  }
-
-  // read file and serve
-  fs.readFile(filePath, (err, content) => {
-    if (err) {
-      res.writeHead(500, { "Content-Type": "text/plain" });
-      res.end("500 - Internal Server Error");
+    // check if file exists and is not a directory
+    let stats;
+    try {
+      stats = fs.lstatSync(filePath);
+    } catch (e) {
+      res.writeHead(404, { 'Content-Type': 'text/plain' });
+      res.write('404 - Not Found\n');
+      res.end();
       return;
     }
 
-    let contentType = "text/plain";
-
-    if (filePath.endsWith(".html") || filePath.endsWith(".htm")) {
-      contentType = "text/html";
-      templateReplace(content.toString("utf-8"), "<!--{{TIMELINE}}-->")
-      .then(htmlStr => templateReplace(htmlStr, "<!--{{IMAGE VIEW}}-->"))
-      .then(htmlStr => {
-        res.writeHead(200, { "Content-Type": contentType });
-        res.write(htmlStr);
-        res.end();
-      });
+    if (stats.isDirectory()) {
+      res.writeHead(404, { 'Content-Type': 'text/plain' });
+      res.write('404 - Not Found\n');
+      res.end();
       return;
     }
 
-    if (filePath.endsWith(".css")) contentType = "text/css";
-    if (filePath.endsWith(".js")) contentType = "application/javascript";
-    if (filePath.endsWith(".webp")) contentType = "image/webp";
+    const blockList = ["/assets/imgconfig.json", "/old/index-old.html"]
+    if (blockList.indexOf(pathname) > -1) {
+      res.writeHead(403, { 'Content-Type': 'text/plain' });
+      res.write('403 - Forbidden\n');
+      res.end();
+      return;
+    }
 
-    res.writeHead(200, { "Content-Type": contentType });
-    res.write(content);
-    res.end();
-  });
+    // read file and serve
+    fs.readFile(filePath, (err, content) => {
+      if (err) {
+        res.writeHead(500, { "Content-Type": "text/plain" });
+        res.end("500 - Internal Server Error");
+        return;
+      }
+
+      let contentType = "text/plain";
+
+      if (filePath.endsWith(".html") || filePath.endsWith(".htm")) {
+        contentType = "text/html";
+        templateReplace(content.toString("utf-8"), "<!--{{TIMELINE}}-->")
+        .then(htmlStr => templateReplace(htmlStr, "<!--{{IMAGE VIEW}}-->"))
+        .then(htmlStr => {
+          res.writeHead(200, { "Content-Type": contentType });
+          res.write(htmlStr);
+          res.end();
+        });
+        return;
+      }
+
+      if (filePath.endsWith(".css")) contentType = "text/css";
+      if (filePath.endsWith(".js")) contentType = "application/javascript";
+      if (filePath.endsWith(".webp")) contentType = "image/webp";
+
+      res.writeHead(200, { "Content-Type": contentType });
+      res.write(content);
+      res.end();
+    });
+  } else if (req.method == "POST") {
+    return;
+  } else {
+    res.writeHead(405, { "Content-Type": "text/plain" });
+    res.end("405 - Method Not Allowed");
+    console.log("\x1b[37m\x1b[44m HTTP \x1b[0m \x1b[37m\x1b[41m ERROR \x1b[0m ["
+                + new Date().toTimeString().split(' ')[0] + "] " + (req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
+                + " \x1b[37m\x1b[41m " + req.method + " \x1b[0m " + "\x1b[31m(405)\x1b[0m");
+    return;
+  }
 });
 
 server.listen(PORT);
