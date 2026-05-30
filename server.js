@@ -3,7 +3,16 @@ const fsp = require("fs").promises;
 const http = require("http");
 const path = require("path");
 
-const PASSWORD = "4c9c9d7808645b8263f1f356d1be85d0464b57a8fdf4a7907975c4841587a12f4c6559eae6cd46dcb463b286d2831e8bf41e91370f9880bf5dd31255ede31a49";
+const PASSWORD = "9936a8971e2fe510e687bf944e73dd473d68d78826445b58a741499ebbc806a625849854cf0b310e6fe338e90590d4bd9d02ac30ef6487b1937bb39bc8eeb2a8";
+const MAXLENGTH = 8388608;
+
+function logMsg(type, msg) {
+  // don't use for logging HTTP
+  const time = new Date().toTimeString().split(' ')[0];
+  if (type == "error" || type == "e")        {console.log(`\x1b[97m\x1b[41m ERROR \x1b[0m [${time}] ${msg}`)}
+  else if (type == "warning" || type == "w") {console.log(`\x1b[97m\x1b[43m WARNING \x1b[0m [${time}] ${msg}`)}
+  else                                       {console.log(`\x1b[97m\x1b[46m INFO \x1b[0m [${time}] ${msg}`)}
+}
 
 function yearElement(year) {
   return `<div class="year-wrapper image-wrapper">\
@@ -106,10 +115,16 @@ async function templateReplace(str, replace) {
 const PORT = 3000;
 
 const server = http.createServer((req, res) => {
+  if (req.headers['content-length'] > MAXLENGTH) {
+    res.writeHead(500, { "Content-Type": "text/plain" });
+    res.end("413 - Content Too Large");
+    return;
+  }
+
   if (req.method == "GET") {
-    console.log("\x1b[37m\x1b[44m HTTP \x1b[0m ["
+    console.log("\x1b[97m\x1b[44m HTTP \x1b[0m ["
                 + new Date().toTimeString().split(' ')[0] + "] " + (req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
-                + " \x1b[37m\x1b[42m GET \x1b[0m " + req.url);
+                + " \x1b[97m\x1b[42m GET \x1b[0m " + req.url);
 
     // parse URL
     const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
@@ -176,13 +191,33 @@ const server = http.createServer((req, res) => {
       res.end();
     });
   } else if (req.method == "POST") {
-    return;
+    console.log("\x1b[97m\x1b[44m HTTP \x1b[0m ["
+                + new Date().toTimeString().split(' ')[0] + "] " + (req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
+                + " \x1b[97m\x1b[45m POST \x1b[0m");
+
+    let body = '';
+    req.on('data', chunk => {body += chunk;});
+
+    req.on('end', () => {
+      try {
+        body = JSON.parse(body)
+      } catch (err) {
+        res.writeHead(400, { "Content-Type": "text/plain" });
+        res.end("400 - Bad Request");
+        logMsg("e", "Could not parse request content: " + err.message);
+        return;
+      }
+      console.log('Body:', body);
+
+      res.writeHead(200, { 'Content-Type': 'text/plain' });
+      res.end('Received');
+    });
   } else {
     res.writeHead(405, { "Content-Type": "text/plain" });
     res.end("405 - Method Not Allowed");
-    console.log("\x1b[37m\x1b[44m HTTP \x1b[0m \x1b[37m\x1b[41m ERROR \x1b[0m ["
+    console.log("\x1b[97m\x1b[44m HTTP \x1b[0m \x1b[97m\x1b[41m ERROR \x1b[0m ["
                 + new Date().toTimeString().split(' ')[0] + "] " + (req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
-                + " \x1b[37m\x1b[41m " + req.method + " \x1b[0m " + "\x1b[31m(405)\x1b[0m");
+                + " \x1b[97m\x1b[41m " + req.method + " \x1b[0m " + "\x1b[31m(405)\x1b[0m");
     return;
   }
 });
