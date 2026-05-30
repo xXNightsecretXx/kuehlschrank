@@ -20,15 +20,15 @@ function yearElement(year) {
 <div class="pointer"></div><div class="pointer"></div><div class="year-spacer"></div></div>`
 }
 
-function dateElement(date, desc, imageURLs, imageAlts) {
+function dateElement(date, desc, imageURIs, imageAlts) {
   date = date.slice(3, 5) + "." + date.slice(0, 2) + ".";
 
   let imgStr = "";
   let imageAlt;
   let i = 0;
-  for (imageURL of imageURLs) {
+  for (imageURI of imageURIs) {
     imageAlt = imageAlts[i];
-    imgStr = imgStr + `<img class="image-preview" tabindex=0 data-variable-tabindex src="${imageURL}" alt="${imageAlt}">`
+    imgStr = imgStr + `<img class="image-preview" tabindex=0 data-variable-tabindex src="${imageURI}" alt="${imageAlt}">`
   i++}
 
   let str = `<div class="image-wrapper image-wrapper-\${{SIDE}}\$">\
@@ -80,8 +80,8 @@ async function buildTimeline() {
       Promise.all(dates.map(date => {return fsp.readdir(`assets/preview/${year}/${date}`).then(images => {return ( /*  date promises */
         Promise.all(images.map(image => {                                                                          /* image promises */
           return `assets/preview/${year}/${date}/${image}`;
-        })).then(imageURLs => {return dateElement(
-          date, imageJSON[year][date][0]["alts"][0], imageURLs, imageJSON[year][date][0]["alts"]
+        })).then(imageURIs => {return dateElement(
+          date, imageJSON[year][date][0]["alts"][0], imageURIs, imageJSON[year][date][0]["alts"]
         );})
       );});}))
     );}).then(dates => {
