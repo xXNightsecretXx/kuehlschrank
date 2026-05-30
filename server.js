@@ -9,9 +9,9 @@ const MAXLENGTH = 8388608;
 function logMsg(type, msg) {
   // don't use for logging HTTP
   const time = new Date().toTimeString().split(' ')[0];
-  if (type == "error" || type == "e")        {console.log(`\x1b[97m\x1b[41m ERROR \x1b[0m [${time}] ${msg}`)}
-  else if (type == "warning" || type == "w") {console.log(`\x1b[97m\x1b[43m WARNING \x1b[0m [${time}] ${msg}`)}
-  else                                       {console.log(`\x1b[97m\x1b[46m INFO \x1b[0m [${time}] ${msg}`)}
+  if (type == "error" || type == "e")        {console.log(`[${time}] \x1b[97m\x1b[41m ERROR \x1b[0m ${msg}`)}
+  else if (type == "warning" || type == "w") {console.log(`[${time}] \x1b[97m\x1b[43m WARNING \x1b[0m ${msg}`)}
+  else                                       {console.log(`[${time}] \x1b[97m\x1b[46m INFO \x1b[0m ${msg}`)}
 }
 
 function yearElement(year) {
@@ -122,8 +122,8 @@ const server = http.createServer((req, res) => {
   }
 
   if (req.method == "GET") {
-    console.log("\x1b[97m\x1b[44m HTTP \x1b[0m ["
-                + new Date().toTimeString().split(' ')[0] + "] " + (req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
+    console.log("[" + new Date().toTimeString().split(' ')[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
+                + (req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
                 + " \x1b[97m\x1b[42m GET \x1b[0m " + req.url);
 
     // parse URL
@@ -191,8 +191,8 @@ const server = http.createServer((req, res) => {
       res.end();
     });
   } else if (req.method == "POST") {
-    console.log("\x1b[97m\x1b[44m HTTP \x1b[0m ["
-                + new Date().toTimeString().split(' ')[0] + "] " + (req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
+    console.log("[" + new Date().toTimeString().split(' ')[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
+                + (req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
                 + " \x1b[97m\x1b[45m POST \x1b[0m");
 
     let body = '';
@@ -215,8 +215,8 @@ const server = http.createServer((req, res) => {
   } else {
     res.writeHead(405, { "Content-Type": "text/plain" });
     res.end("405 - Method Not Allowed");
-    console.log("\x1b[97m\x1b[44m HTTP \x1b[0m \x1b[97m\x1b[41m ERROR \x1b[0m ["
-                + new Date().toTimeString().split(' ')[0] + "] " + (req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
+    console.log("[" + new Date().toTimeString().split(' ')[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
+                + (req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
                 + " \x1b[97m\x1b[41m " + req.method + " \x1b[0m " + "\x1b[31m(405)\x1b[0m");
     return;
   }
