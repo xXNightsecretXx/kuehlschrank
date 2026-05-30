@@ -3,8 +3,8 @@ const fsp = require("fs").promises;
 const http = require("http");
 const path = require("path");
 
-const PASSWORD = "9936a8971e2fe510e687bf944e73dd473d68d78826445b58a741499ebbc806a625849854cf0b310e6fe338e90590d4bd9d02ac30ef6487b1937bb39bc8eeb2a8";
-const MAXLENGTH = 8388608;
+const KEY = "9936a8971e2fe510e687bf944e73dd473d68d78826445b58a741499ebbc806a625849854cf0b310e6fe338e90590d4bd9d02ac30ef6487b1937bb39bc8eeb2a8";
+const MAXLENGTH = Infinity;
 
 function logMsg(type, msg) {
   // don't use for logging HTTP

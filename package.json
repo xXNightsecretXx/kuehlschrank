@@ -19,5 +19,8 @@
   },
   "bugs": {
     "url": "https://gitlab.platform4.me/lukas/kuehlschrank/issues"
+  },
+  "dependencies": {
+    "archiver": "^8.0.0"
   }
 }
