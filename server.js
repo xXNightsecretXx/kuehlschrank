@@ -123,7 +123,7 @@ const server = http.createServer((req, res) => {
 
   if (req.method == "GET") {
     console.log("[" + new Date().toTimeString().split(' ')[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
-                + (req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
+                + (req.headers['X-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
                 + " \x1b[97m\x1b[42m GET \x1b[0m " + req.url);
 
     // parse URL
