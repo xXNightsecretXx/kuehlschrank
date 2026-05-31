@@ -133,13 +133,21 @@ async function templateReplace(str, replace) {
 const PORT = 3000;
 
 const server = http.createServer((req, res) => {
-  if (req.headers['content-length'] > MAXLENGTH) {
+  if (req.headers["content-length"] > MAXLENGTH) {
     res.writeHead(413, { "Content-Type": "text/plain" });
     res.end("413 - Content Too Large");
     return;
   }
+  
+  res.setHeader("Access-Control-Allow-Origin", req.headers.origin || "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Authorization");
 
-  if (req.method == "GET") {
+  if (req.method === "OPTIONS") {
+    res.writeHead(204);
+    res.end();
+    return;
+  } else if (req.method == "GET") {
     console.log("[" + new Date().toTimeString().split(' ')[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
                 + (req.headers['X-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
                 + " \x1b[97m\x1b[42m GET \x1b[0m " + req.url);
@@ -233,7 +241,7 @@ const server = http.createServer((req, res) => {
     });
   } else if (req.method == "POST") {
     console.log("[" + new Date().toTimeString().split(' ')[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
-                + (req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
+                + (req.headers['X-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
                 + " \x1b[97m\x1b[45m POST \x1b[0m");
 
     if (authenticateRequest(req, res)) {return;}
@@ -259,7 +267,7 @@ const server = http.createServer((req, res) => {
     res.writeHead(405, { "Content-Type": "text/plain" });
     res.end("405 - Method Not Allowed");
     console.log("[" + new Date().toTimeString().split(' ')[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
-                + (req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
+                + (req.headers['X-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
                 + " \x1b[97m\x1b[41m " + req.method + " \x1b[0m " + "\x1b[31m(405)\x1b[0m");
     return;
   }
