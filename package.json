@@ -11,7 +11,7 @@
   },
   "license": "ISC",
   "author": "Lukas",
-  "type": "commonjs",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "test": "echo test",
