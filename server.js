@@ -1,3 +1,4 @@
+const {ZipArchive} = require("archiver")
 const crypto = require("crypto");
 const fs = require("fs");
 const fsp = require("fs").promises;
@@ -17,13 +18,14 @@ function logMsg(type, msg) {
 
 function authenticateRequest(req, res) {
   let key = req.headers["authorization"];
-  logMsg("i", "Key: " + key)
+  logMsg("i", "Authorization of " + req.method + " request...")
   if (key && crypto.createHash('sha512').update(key).digest('hex') != KEY) {
     res.writeHead(401, { "Content-Type": "text/plain" });
     res.end("401 - Unauthorized");
-    logMsg("w", "401 Unatuhorized")
+    logMsg("w", "401 Authorization failed with key: " + key)
     return true;
   }
+  logMsg("i", "Authorization succeeded")
 }
 
 function yearElement(year) {
@@ -157,6 +159,29 @@ const server = http.createServer((req, res) => {
       return;
     }
 
+    // download ZIP
+    if (pathname== "/assets") {
+      if (authenticateRequest(req, res)) {return;}
+
+      res.writeHead(200, {
+          "Content-Type": "application/zip",
+          "Content-Disposition": "attachment; filename=\"assets.zip\""
+      });
+
+      const archive = new ZipArchive({zlib: {level: 0}});
+
+      archive.on("error", (err) => {
+          res.end();
+          logMsg("e", err.message);
+      });
+
+      archive.pipe(res);
+      archive.directory(filePath, false);
+      archive.finalize();
+      return;
+    }
+
+    // check if file exists and is not a directory
     if (stats.isDirectory()) {
       res.writeHead(404, { 'Content-Type': 'text/plain' });
       res.write('404 - Not Found\n');

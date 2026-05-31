@@ -64,3 +64,29 @@ keyInput.addEventListener('keydown', e => {
     keyInput.value = "";
   }
 });
+
+/*---Download Assets---------------*/
+async function downloadArchive() {
+  const request = await fetch("http://localhost:3000/assets", {
+    method: "GET",
+    headers: {
+      "Authorization": key,
+      "Content-Type": "application/json"
+    }
+  });
+
+  if (!request.ok) {console.error("Download failed: " + request.status);return;}
+
+  const blob = await request.blob();
+  const downloadUrl = window.URL.createObjectURL(blob);
+
+  const anchor = document.createElement("a");
+  anchor.href = downloadUrl;
+  anchor.download = "assets.zip";
+  
+  document.body.appendChild(anchor);
+  anchor.click();
+
+  document.body.removeChild(anchor);
+  window.URL.revokeObjectURL(downloadUrl);
+}
