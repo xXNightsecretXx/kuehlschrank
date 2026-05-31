@@ -2,10 +2,6 @@ body{
   color: var(--text);
 }
 
-input:focus {
-  background: var(--dp4);
-}
-
 .title-wrapper {
   position: relative;
   z-index: 101;
@@ -39,13 +35,46 @@ form {
 input {
   background: var(--dp1);
   border: 0;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 2px solid #00000000;
   border-radius: var(--radius) var(--radius) 0 0;
   font-family: inherit;
-  height: 24px;
+  font-size: 16px;
+  height: 20px;
   margin: 0 8px;
   max-width: 480px;
-  padding: 4px;
+  padding: 20px 16px 6px 16px;
+  outline: none;
+  transition: .15s linear;
+}
+
+input:focus {
+  border-bottom: 2px solid var(--border);
+}
+
+input + label {
+  color: var(--text-variant);
+  font-size: 16px;
+  height: 4px;
+  margin: -20px 0 0 0;
+  pointer-events: none;
+  transform: translateX(24px) translateY(-30px);
+  transition: .15s;
+}
+
+input:focus + label {
+  color: var(--text-variant);
+  font-size: 12px;
+  height: 4px;
+  margin: -20px 0 0 0;
+  transform: translateX(24px) translateY(-40px);
+}
+
+input:not(:placeholder-shown) + label {
+  color: var(--text-variant);
+  font-size: 12px;
+  height: 4px;
+  margin: -20px 0 0 0;
+  transform: translateX(24px) translateY(-40px);
 }
 
 input[type="file"] {
