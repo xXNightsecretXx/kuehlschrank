@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const fs = require("fs");
 const fsp = require("fs").promises;
 const http = require("http");
@@ -12,6 +13,17 @@ function logMsg(type, msg) {
   if (type == "error" || type == "e")        {console.log(`[${time}] \x1b[97m\x1b[41m ERROR \x1b[0m ${msg}`)}
   else if (type == "warning" || type == "w") {console.log(`[${time}] \x1b[97m\x1b[43m WARNING \x1b[0m ${msg}`)}
   else                                       {console.log(`[${time}] \x1b[97m\x1b[46m INFO \x1b[0m ${msg}`)}
+}
+
+function authenticateRequest(req, res) {
+  let key = req.headers["authorization"];
+  logMsg("i", "Key: " + key)
+  if (key && crypto.createHash('sha512').update(key).digest('hex') != KEY) {
+    res.writeHead(401, { "Content-Type": "text/plain" });
+    res.end("401 - Unauthorized");
+    logMsg("w", "401 Unatuhorized")
+    return true;
+  }
 }
 
 function yearElement(year) {
@@ -116,7 +128,7 @@ const PORT = 3000;
 
 const server = http.createServer((req, res) => {
   if (req.headers['content-length'] > MAXLENGTH) {
-    res.writeHead(500, { "Content-Type": "text/plain" });
+    res.writeHead(413, { "Content-Type": "text/plain" });
     res.end("413 - Content Too Large");
     return;
   }
@@ -194,6 +206,8 @@ const server = http.createServer((req, res) => {
     console.log("[" + new Date().toTimeString().split(' ')[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
                 + (req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
                 + " \x1b[97m\x1b[45m POST \x1b[0m");
+
+    if (authenticateRequest(req, res)) {return;}
 
     let body = '';
     req.on('data', chunk => {body += chunk;});

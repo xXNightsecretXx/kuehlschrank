@@ -61,5 +61,6 @@ keyInput.addEventListener('keydown', e => {
   if (e.key == "Enter") {
     keyInputWrapper.style.display = 'none';
     stretch(keyInput.value + SALT, N).then(key => console.log(key));
+    keyInput.value = "";
   }
 });
