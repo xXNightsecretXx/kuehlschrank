@@ -78,6 +78,14 @@ document.getElementById("upload").addEventListener("submit", (e) => {
       data["description"] = document.getElementById("upload-description").value;
       data["data"] = reader.result;
       console.log(data);
+
+      fetch("https://kuehlschrank.farni.ng", {
+        method: "POST",
+        headers: {
+          "Authentication": key
+        },
+        body: JSON.stringify(data)
+      })
     });
   }
 })
