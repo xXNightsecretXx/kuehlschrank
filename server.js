@@ -3,7 +3,7 @@ const fsp = require("fs").promises;
 const http = require("http");
 const path = require("path");
 
-const KEY = "9936a8971e2fe510e687bf944e73dd473d68d78826445b58a741499ebbc806a625849854cf0b310e6fe338e90590d4bd9d02ac30ef6487b1937bb39bc8eeb2a8";
+const KEY = "3878c50010ee4778249d7cc5da91086860e986b488c4685e94c41a133155149f4e6eeeb699163532f9c39564b61c06b0855ebcea4f4612e0ab4b4dfdbe039e68";
 const MAXLENGTH = Infinity;
 
 function logMsg(type, msg) {
