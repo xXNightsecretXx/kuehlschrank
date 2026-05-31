@@ -74,7 +74,6 @@ document.getElementById("upload").addEventListener("submit", (e) => {
     reader.readAsDataURL(document.getElementById("upload-file").files[0]);
     reader.addEventListener("load", () => {
       const base64img = reader.result;
-    console.log(base64img, reader.result)
     });
   }
 })
