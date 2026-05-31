@@ -30,14 +30,14 @@
       </div>
     </section>
     <div class="forms-wrapper">
-      <form>
+      <form id="upload">
         <h3>Bilder Hochladen</h3>
-        <input type="file" accept="image/avif, image/bmp, image/gif, image/jpeg, image/tiff, image/png, image/webp">
-        <input placeholder="">
+        <input id="upload-file" type="file" accept="image/avif, image/bmp, image/gif, image/jpeg, image/tiff, image/png, image/webp">
+        <input id="upload-alt-text" placeholder="">
         <label>Alternativtext</label>
-        <input placeholder="">
+        <input id="upload-description" placeholder="">
         <label>Beschreibung</label>
-        <button class="btn btn-medium btn-submit" type="submit"><b>Hochladen</b></button>
+        <button id ="upload-submit" class="btn btn-medium btn-submit" type="submit"><b>Hochladen</b></button>
       </form>
     </div>
     <script src="config.js" defer></script>
