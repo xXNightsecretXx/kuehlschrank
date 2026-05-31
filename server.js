@@ -168,7 +168,7 @@ const server = http.createServer((req, res) => {
           "Content-Disposition": "attachment; filename=\"assets.zip\""
       });
 
-      const archive = new ZipArchive({zlib: {level: 0}});
+      const archive = new ZipArchive({zlib: {level: 6}});
 
       archive.on("error", (err) => {
           res.end();
