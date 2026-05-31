@@ -65,6 +65,20 @@ keyInput.addEventListener('keydown', e => {
   }
 });
 
+/*---Upload Assets-----------------*/
+document.getElementById("upload").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const file = document.getElementById("upload-file").files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.readAsDataURL(document.getElementById("upload-file").files[0]);
+    reader.addEventListener("load", () => {
+      const base64img = reader.result;
+    console.log(base64img, reader.result)
+    });
+  }
+})
+
 /*---Download Assets---------------*/
 async function downloadArchive() {
   const request = await fetch("http://localhost:3000/assets", {
