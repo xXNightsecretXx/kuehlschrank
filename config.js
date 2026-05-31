@@ -73,7 +73,11 @@ document.getElementById("upload").addEventListener("submit", (e) => {
     const reader = new FileReader();
     reader.readAsDataURL(document.getElementById("upload-file").files[0]);
     reader.addEventListener("load", () => {
-      const base64img = reader.result;
+      const data = Object.create(Object.prototype);
+      data["alt-text"] = document.getElementById("upload-alt-text").value;
+      data["description"] = document.getElementById("upload-description").value;
+      data["data"] = reader.result;
+      console.log(data);
     });
   }
 })
