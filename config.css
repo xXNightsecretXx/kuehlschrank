@@ -2,6 +2,18 @@ body{
   color: var(--text);
 }
 
+.btn-medium {
+  background: var(--dp2);
+  border: 1px solid #00000000;
+  margin-left: 8px;
+  padding: 10px 16px;
+}
+
+.btn-medium:hover {
+  color: var(--text-variant);
+  border: 1px solid var(--border-variant);
+}
+
 .title-wrapper {
   position: relative;
   z-index: 101;
@@ -91,28 +103,33 @@ input:not(:placeholder-shown) + label {
 input[type="file"] {
   background: var(--dp0);
   border: 1px dashed var(--border);;
-  border-radius: 20px;
+  border-radius: calc(var(--radius) + 12px);
   font-size: 1em;
-  height: 48px;
-  padding: 8px;
+  height: 36px;
+  padding: 12px;
 }
 
 input::file-selector-button {
-  background: var(--dp2);
+  background: var(--dp0);
   border: 1px solid var(--border-variant);
-  border-radius: 12px;
+  border-radius: var(--radius);
   color: var(--text-variant);
   cursor: pointer;
   font-family: inherit;
-  height: 48px;
+  font-size: 13.3333px;
+  font-weight: bold;
+  height: 36px;
   margin-right: 16px;
   transition: .15s;
-  padding-left: 12px;
-  padding-right: 12px;
+  padding: 10px 16px;
 }
 
 input::file-selector-button:hover {
-  background: var(--dp8);
+  background: var(--dp2);
   box-shadow: var(--shadow-dp6);
-  color: var(--text);
+}
+
+.btn-submit {
+  font-family: inherit;
+  width: min-content;
 }
