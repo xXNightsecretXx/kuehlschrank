@@ -1,9 +1,13 @@
-const {ZipArchive} = require("archiver")
-const crypto = require("crypto");
-const fs = require("fs");
-const fsp = require("fs").promises;
-const http = require("http");
-const path = require("path");
+import {ZipArchive} from "archiver";
+import crypto from "crypto";
+import fs from "fs";
+import {promises as fsp} from "fs";
+import http from "http";
+import path from "path";
+import {dirname} from "path";
+import {fileURLToPath} from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const KEY = "3878c50010ee4778249d7cc5da91086860e986b488c4685e94c41a133155149f4e6eeeb699163532f9c39564b61c06b0855ebcea4f4612e0ab4b4dfdbe039e68";
 const MAXLENGTH = Infinity;
@@ -40,7 +44,7 @@ function dateElement(date, desc, imageURIs, imageAlts) {
   let imgStr = "";
   let imageAlt;
   let i = 0;
-  for (imageURI of imageURIs) {
+  for (let imageURI of imageURIs) {
     imageAlt = imageAlts[i];
     imgStr = imgStr + `<img class="image-preview" tabindex=0 data-variable-tabindex src="${imageURI}" alt="${imageAlt}">`
   i++}
@@ -60,7 +64,7 @@ function imageElements(path, images, alts, descs) {
   let alt;
   let desc;
   let i = 0;
-  for (image of images) {
+  for (let image of images) {
     alt = alts[i];
     desc = descs[i];
     imgStr = imgStr + `<img class="image-view hidden" loading="lazy" src="${path + image}" alt="${alt}"><p class="caption hidden">${desc}</p>`
