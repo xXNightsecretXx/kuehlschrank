@@ -54,7 +54,7 @@ window.addEventListener("resize", (e) => {resizeTitle();});
 
 /*---Key Input---------------------*/
 const keyInput = document.getElementById("key-input");
-const keyInputWrapper = document.getElementById("key-input-wrapper");
+const keyInputWrapper = document.getElementById("key-input-wrapper-wrapper");
 let key;
 
 keyInput.addEventListener('keydown', e => {

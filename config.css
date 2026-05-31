@@ -12,7 +12,7 @@ body{
   position: relative;
 }
 
-#key-input-wrapper {
+#key-input-wrapper-wrapper {
   align-items: center;
   background: var(--dp0);
   display: flex;
@@ -21,9 +21,19 @@ body{
   height: 100dvh;
   justify-content: center;
   position: fixed;
+  top: 0;
   width: 100%;
   z-index: 100;
 }
+
+#key-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+#key-input {margin: 0;}
+#key-input-label {margin-left: -8px;}
 
 form {
   display: flex;
@@ -37,11 +47,12 @@ input {
   border: 0;
   border-bottom: 2px solid #00000000;
   border-radius: var(--radius) var(--radius) 0 0;
+  caret-color: var(--text);
+  color: inherit;
   font-family: inherit;
   font-size: 16px;
   height: 20px;
   margin: 0 8px;
-  max-width: 480px;
   padding: 20px 16px 6px 16px;
   outline: none;
   transition: .15s linear;
@@ -83,15 +94,14 @@ input[type="file"] {
   border-radius: 20px;
   font-size: 1em;
   height: 48px;
-  max-width: 472px;
   padding: 8px;
 }
 
 input::file-selector-button {
   background: var(--dp2);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-variant);
   border-radius: 12px;
-  color: inherit;
+  color: var(--text-variant);
   cursor: pointer;
   font-family: inherit;
   height: 48px;
