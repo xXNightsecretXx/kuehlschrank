@@ -79,7 +79,7 @@ document.getElementById("upload").addEventListener("submit", (e) => {
       data["data"] = reader.result;
       console.log(data);
 
-      fetch("https://kuehlschrank.farni.ng", {
+      fetch("http://localhost:3000", {
         method: "POST",
         headers: {
           "Authentication": key

@@ -122,11 +122,16 @@ async function buildImageView() {
   .then(htmlList => {return htmlList.flat(Infinity).join("");});
 }
 
-async function templateReplace(str, replace) {
+async function templateReplace(str, replace, res) {
   if (replace == "<!--{{TIMELINE}}-->") {
-    return str.replace(replace, await buildTimeline());
+    return str.replace(replace, await buildTimeline().catch(err => {
+      logMsg("w", "imgconfig.json missing contents");
+    }))
   } else if (replace == "<!--{{IMAGE VIEW}}-->") {
-    return str.replace(replace, await buildImageView());
+    return str.replace(replace + "Something went wrong.", await buildImageView().catch(err => {
+      logMsg("w", "imgconfig.json missing contents");
+    }))
+    .replace('<meta http-equiv="refresh" content="1">', "");
   }
 }
 
