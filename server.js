@@ -156,6 +156,8 @@ async function updateImgConfig(date, alttext, description) {
   imageJSON[year][date][0]["descriptions"].push(description);
 
   await fsp.writeFile(imgconfigPath, JSON.stringify(imageJSON, null, 4));
+
+  return;
 }
 
 //-----------------------------------------------------------------------------
@@ -293,9 +295,29 @@ const server = http.createServer((req, res) => {
         logMsg("e", "Error while processing request: Missing Field");
         return;
       }
-      console.log('Body:', body);
+
+      const base64Image = base64String.split('base64,').pop();
+      if (!/^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/.test(base64Image)) {
+        res.writeHead(400, { "Content-Type": "text/plain" });
+        res.end("400 - Bad Request: invalid base64 string");
+        logMsg("e", "Error while processing request: invalid base64 string");
+        return;
+      }
 
       updateImgConfig(body.date, body.alttext, body.description)
+      .catch(err => {
+        res.writeHead(400, { "Content-Type": "text/plain" });
+        res.end("400 - Bad Request: Error while processing request:" + error.message);
+        logMsg("e", "Error while processing request:" + error.message);
+        return;
+      })
+
+      if (isNaN(new Date(date)) || date.indexOf(" ") > -1) {
+        res.writeHead(400, { "Content-Type": "text/plain" });
+        res.end("400 - Bad Request: invalid date");
+        logMsg("e", "Error while processing request: invalid date");
+        return;
+      }
 
       res.writeHead(200, { 'Content-Type': 'text/plain' });
       res.end();
