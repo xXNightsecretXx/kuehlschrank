@@ -11,6 +11,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const KEY = "3878c50010ee4778249d7cc5da91086860e986b488c4685e94c41a133155149f4e6eeeb699163532f9c39564b61c06b0855ebcea4f4612e0ab4b4dfdbe039e68";
 const MAXLENGTH = Infinity;
+const PORT = 3000;
 
 function logMsg(type, msg) {
   // don't use for logging HTTP
@@ -135,7 +136,29 @@ async function templateReplace(str, replace, res) {
   }
 }
 
-const PORT = 3000;
+//-----------------------------------------------------------------------------
+
+async function updateImgConfig(date, alttext, description) {
+  const imgconfigPath = __dirname + "/assets/imgconfig.json";
+
+  if (isNaN(new Date(date)) || date.indexOf(" ") > -1) {throw new Error("invalid date");}
+
+  const imageJSONFile = await fsp.readFile(imgconfigPath, "utf-8");
+  let imageJSON = JSON.parse(imageJSONFile);
+  
+  const year = date.slice(5);
+  date = date.slice(0, 5);
+
+  if (!imageJSON[year]) {imageJSON[year] = {};}
+  if (!imageJSON[date]) {imageJSON[year][date] = [{"alts": [], "descriptions": []}];}
+
+  imageJSON[year][date][0]["alts"].push(alttext);
+  imageJSON[year][date][0]["alts"].push(description);
+
+  await fsp.writeFile(imgconfigPath, JSON.stringify(imageJSON));
+}
+
+//-----------------------------------------------------------------------------
 
 const server = http.createServer((req, res) => {
   if (req.headers["content-length"] > MAXLENGTH) {
@@ -263,10 +286,19 @@ const server = http.createServer((req, res) => {
         logMsg("e", "Could not parse request content: " + err.message);
         return;
       }
+
+      if (!(body.date || body.alttext || body.description || body.data)) {
+        res.writeHead(400, { "Content-Type": "text/plain" });
+        res.end("400 - Bad Request: Missing field");
+        logMsg("e", "Error while processing request: Missing Field");
+        return;
+      }
       console.log('Body:', body);
 
+      updateImgConfig(body.date, body.alttext, body.description)
+
       res.writeHead(200, { 'Content-Type': 'text/plain' });
-      res.end('Received');
+      res.end();
     });
   } else {
     res.writeHead(405, { "Content-Type": "text/plain" });
