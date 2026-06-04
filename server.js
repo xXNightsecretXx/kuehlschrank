@@ -166,8 +166,13 @@ async function updateImgConfig(date, alttext, description) {
 async function updateImg(date, data) {
   if (isNaN(new Date(date)) || date.indexOf(" ") > -1) {throw new Error("invalid date");}
   const _ulid = ulid()
-  const mainPath = __dirname + `/assets/img/${date.slice(0, 4)}/${date.slice(5, 10)}/${_ulid}.webp`
-  const previewPath = __dirname + `/assets/preview/${date.slice(0, 4)}/${date.slice(5, 10)}/${_ulid}.webp`
+  const mainPath = __dirname + `/assets/img/${date.slice(0, 4)}/${date.slice(5, 10)}`
+  const previewPath = __dirname + `/assets/preview/${date.slice(0, 4)}/${date.slice(5, 10)}`
+
+  await Promise.all([
+    fsp.mkdir(mainPath, {recursive: true}),
+    fsp.mkdir(previewPath, {recursive: true})
+  ]);
 
   const binaryString = atob(data);
   let bytes = new Uint8Array(binaryString.length);
@@ -176,14 +181,17 @@ async function updateImg(date, data) {
   }
   const buffer = bytes.buffer
 
-  const mainImage = await sharp(inputBuffer)
+  await Promise.all([
+    sharp(buffer)
     .webp()
-    .toFile(mainPath);
+    .toFile(`${mainPath}/${_ulid}.webp`),
 
-  const previewImage = await sharp(inputBuffer)
+    sharp(buffer)
     .resize(128)
     .webp({quality: 50})
-    .toFile(previewPath);
+    .toFile(`${previewPath}/${_ulid}.webp`)
+  ]);
+  return [`${mainPath}/${_ulid}.webp`, `${previewPath}/${_ulid}.webp`]
 }
 
 //-----------------------------------------------------------------------------
@@ -345,7 +353,7 @@ const server = http.createServer((req, res) => {
         const imageResult = results[1];
 
         if (textResult.status === "fulfilled" && imageResult.status === "fulfilled") {
-          console.log("yay");
+          logMsg("i", "Image successfully saved")
           res.writeHead(200, { 'Content-Type': 'text/plain' });
           res.end();
           return;
