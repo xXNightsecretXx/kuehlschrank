@@ -134,6 +134,14 @@ input::file-selector-button:hover {
   box-shadow: var(--shadow-dp6);
 }
 
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(1);
+}
+
+:root[data-theme="light"] input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(0.0705);
+}
+
 .btn-submit {
   font-family: inherit;
   width: min-content;
