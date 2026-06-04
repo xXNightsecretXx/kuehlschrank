@@ -146,16 +146,16 @@ async function updateImgConfig(date, alttext, description) {
   const imageJSONFile = await fsp.readFile(imgconfigPath, "utf-8");
   let imageJSON = JSON.parse(imageJSONFile);
   
-  const year = date.slice(5);
-  date = date.slice(0, 5);
+  const year = date.slice(0, 4);
+  date = date.slice(5, 10);
 
   if (!imageJSON[year]) {imageJSON[year] = {};}
   if (!imageJSON[date]) {imageJSON[year][date] = [{"alts": [], "descriptions": []}];}
 
   imageJSON[year][date][0]["alts"].push(alttext);
-  imageJSON[year][date][0]["alts"].push(description);
+  imageJSON[year][date][0]["descriptions"].push(description);
 
-  await fsp.writeFile(imgconfigPath, JSON.stringify(imageJSON));
+  await fsp.writeFile(imgconfigPath, JSON.stringify(imageJSON, null, 4));
 }
 
 //-----------------------------------------------------------------------------
