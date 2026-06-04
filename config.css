@@ -1,5 +1,10 @@
-body{
+body {
   color: var(--text);
+}
+
+a {
+  color: var(--text);
+  text-decoration: none;
 }
 
 .btn-medium {
