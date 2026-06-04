@@ -5,6 +5,7 @@ import {promises as fsp} from "fs";
 import http from "http";
 import path from "path";
 import {dirname} from "path";
+import sharp from "sharp";
 import {fileURLToPath} from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

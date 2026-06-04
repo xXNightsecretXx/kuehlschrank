@@ -21,6 +21,7 @@
     "url": "https://gitlab.platform4.me/lukas/kuehlschrank/issues"
   },
   "dependencies": {
-    "archiver": "^8.0.0"
+    "archiver": "^8.0.0",
+    "sharp": "^0.34.5"
   }
 }
