@@ -74,6 +74,7 @@ document.getElementById("upload").addEventListener("submit", (e) => {
     reader.readAsDataURL(document.getElementById("upload-file").files[0]);
     reader.addEventListener("load", () => {
       const data = Object.create(Object.prototype);
+      data["date"] = document.getElementById("upload-date").value;
       data["alt-text"] = document.getElementById("upload-alt-text").value;
       data["description"] = document.getElementById("upload-description").value;
       data["data"] = reader.result;
