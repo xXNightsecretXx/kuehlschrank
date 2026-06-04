@@ -18,6 +18,7 @@ function logMsg(type, msg) {
   // don't use for logging HTTP
   const time = new Date().toTimeString().split(' ')[0];
   if (type == "error" || type == "e")        {console.log(`[${time}] \x1b[97m\x1b[41m ERROR \x1b[0m ${msg}`)}
+  else if (type == "ferror" || type == "fe") {console.log(`[${time}] \x1b[97m\x1b[41m FATAL ERROR \x1b[0m ${msg}`)}
   else if (type == "warning" || type == "w") {console.log(`[${time}] \x1b[97m\x1b[43m WARNING \x1b[0m ${msg}`)}
   else                                       {console.log(`[${time}] \x1b[97m\x1b[46m INFO \x1b[0m ${msg}`)}
 }
@@ -316,22 +317,36 @@ const server = http.createServer((req, res) => {
         return;
       }
 
-      const textPromise = updateImgConfig(body.date, body.alttext, body.description)
-      textPromise.catch(err => {
-        res.writeHead(400, { "Content-Type": "text/plain" });
-        res.end("400 - Bad Request: Error while processing request:" + error.message);
-        logMsg("e", "Error while processing request:" + error.message);
-        return;
-      })
-
       const imagePromise = updateImg(body.date, base64Image);
-
-      try {
-        const before = await textPromise;
-        await imagePromise;
-      } catch {
-        await fsp.writeFile(__dirname + "/assets/imgconfig.json", before);
-      }
+      imagePromise.then(() => {
+        textPromise.then(() => {
+          console.log("yay")
+        }).catch(error => {
+          res.writeHead(500, { "Content-Type": "text/plain" });
+          res.end("500 - Internal Server Error: Error while processing request");
+          logMsg("e", "Error while processing request:" + error.message);
+          fsp.writeFile(__dirname + "/assets/imgconfig.json", before).catch((innerError => {
+            logMsg("fe", "Error while reseting imgconfig.json: " + error.message);
+            throw new AggregateError([error, innerError]);
+          }));
+          return;
+        });
+      }).catch(error => {
+        textPromise.then((before) => { // reset imgconfig
+          logMsg("e", "Error while provessing request: " + error.message)
+          res.writeHead(500, { "Content-Type": "text/plain" });
+          res.end("500 - Internal Server Error");
+          fsp.writeFile(__dirname + "/assets/imgconfig.json", before).catch((innerError => {
+            logMsg("fe", "Could not reset imgconfig.json after error with image parsing: " + innerError.message + " because of " + error.message);
+          }));
+          throw new AggregateError([error, innerError]);
+        }).catch(innerError => {
+          logMsg("fe", "Could not reset imgconfig.json after error with image parsing: " + innerError.message + " because of " + error.message);
+          res.writeHead(500, { "Content-Type": "text/plain" });
+          res.end("500 - Internal Server Error");
+          throw new AggregateError([error, innerError]);
+        });
+      });
 
       res.writeHead(200, { 'Content-Type': 'text/plain' });
       res.end();
