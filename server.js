@@ -157,7 +157,11 @@ async function updateImgConfig(date, alttext, description) {
 
   await fsp.writeFile(imgconfigPath, JSON.stringify(imageJSON, null, 4));
 
-  return;
+  return imageJSONFile;
+}
+
+async function updateImg(date, data) {
+  
 }
 
 //-----------------------------------------------------------------------------
@@ -304,19 +308,28 @@ const server = http.createServer((req, res) => {
         return;
       }
 
-      updateImgConfig(body.date, body.alttext, body.description)
-      .catch(err => {
+      if (isNaN(new Date(date)) || date.indexOf(" ") > -1) {
+        res.writeHead(400, { "Content-Type": "text/plain" });
+        res.end("400 - Bad Request: invalid date");
+        logMsg("e", "Error while processing request: invalid date");
+        return;
+      }
+
+      const textPromise = updateImgConfig(body.date, body.alttext, body.description)
+      textPromise.catch(err => {
         res.writeHead(400, { "Content-Type": "text/plain" });
         res.end("400 - Bad Request: Error while processing request:" + error.message);
         logMsg("e", "Error while processing request:" + error.message);
         return;
       })
 
-      if (isNaN(new Date(date)) || date.indexOf(" ") > -1) {
-        res.writeHead(400, { "Content-Type": "text/plain" });
-        res.end("400 - Bad Request: invalid date");
-        logMsg("e", "Error while processing request: invalid date");
-        return;
+      const imagePromise = updateImg(body.date, base64Image);
+
+      try {
+        const before = await textPromise;
+        await imagePromise;
+      } catch {
+        await fsp.writeFile(__dirname + "/assets/imgconfig.json", before);
       }
 
       res.writeHead(200, { 'Content-Type': 'text/plain' });
@@ -333,3 +346,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT);
+
+/*fsp.writeFile(path, base64Image, "base64")*/
