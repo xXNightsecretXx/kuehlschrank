@@ -6,6 +6,7 @@ import http from "http";
 import path from "path";
 import {dirname} from "path";
 import sharp from "sharp";
+import {ulid} from "ulid";
 import {fileURLToPath} from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -164,10 +165,11 @@ async function updateImgConfig(date, alttext, description) {
 
 async function updateImg(date, data) {
   if (isNaN(new Date(date)) || date.indexOf(" ") > -1) {throw new Error("invalid date");}
-  const mainPath = __dirname + `/assets/img/${date.slice(0, 4)}/${date.slice(5, 10)}`
-  const previewPath = __dirname + `/assets/preview/${date.slice(0, 4)}/${date.slice(5, 10)}`
+  const _ulid = ulid()
+  const mainPath = __dirname + `/assets/img/${date.slice(0, 4)}/${date.slice(5, 10)}/${_ulid}.webp`
+  const previewPath = __dirname + `/assets/preview/${date.slice(0, 4)}/${date.slice(5, 10)}/${_ulid}.webp`
 
-  const binaryString = atob(base64);
+  const binaryString = atob(data);
   let bytes = new Uint8Array(binaryString.length);
   for (var i = 0; i < binaryString.length; i++) {
     bytes[i] = binaryString.charCodeAt(i);
@@ -313,14 +315,14 @@ const server = http.createServer((req, res) => {
         return;
       }
 
-      if (!(body.date || body.alttext || body.description || body.data)) {
+      if (!(body.date && body.alttext && body.description && body.data)) {
         res.writeHead(400, { "Content-Type": "text/plain" });
         res.end("400 - Bad Request: Missing field");
         logMsg("e", "Error while processing request: Missing Field");
         return;
       }
 
-      const base64Image = base64String.split('base64,').pop();
+      const base64Image = body.data.split('base64,').pop();
       if (!/^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/.test(base64Image)) {
         res.writeHead(400, { "Content-Type": "text/plain" });
         res.end("400 - Bad Request: invalid base64 string");
@@ -328,46 +330,50 @@ const server = http.createServer((req, res) => {
         return;
       }
 
-      if (isNaN(new Date(date)) || date.indexOf(" ") > -1) {
+      if (isNaN(new Date(body.date)) || body.date.indexOf(" ") > -1) {
         res.writeHead(400, { "Content-Type": "text/plain" });
         res.end("400 - Bad Request: invalid date");
         logMsg("e", "Error while processing request: invalid date");
         return;
       }
-
+      
+      const textPromise = updateImgConfig(body.date, body.alttext, body.description);
       const imagePromise = updateImg(body.date, base64Image);
-      imagePromise.then(() => {
-        textPromise.then(() => {
-          console.log("yay")
-        }).catch(error => {
-          res.writeHead(500, { "Content-Type": "text/plain" });
-          res.end("500 - Internal Server Error: Error while processing request");
-          logMsg("e", "Error while processing request:" + error.message);
-          fsp.writeFile(__dirname + "/assets/imgconfig.json", before).catch((innerError => {
-            logMsg("fe", "Error while reseting imgconfig.json: " + error.message);
-            throw new AggregateError([error, innerError]);
-          }));
-          return;
-        });
-      }).catch(error => {
-        textPromise.then((before) => { // reset imgconfig
-          logMsg("e", "Error while provessing request: " + error.message)
-          res.writeHead(500, { "Content-Type": "text/plain" });
-          res.end("500 - Internal Server Error");
-          fsp.writeFile(__dirname + "/assets/imgconfig.json", before).catch((innerError => {
-            logMsg("fe", "Could not reset imgconfig.json after error with image parsing: " + innerError.message + " because of " + error.message);
-          }));
-          throw new AggregateError([error, innerError]);
-        }).catch(innerError => {
-          logMsg("fe", "Could not reset imgconfig.json after error with image parsing: " + innerError.message + " because of " + error.message);
-          res.writeHead(500, { "Content-Type": "text/plain" });
-          res.end("500 - Internal Server Error");
-          throw new AggregateError([error, innerError]);
-        });
-      });
 
-      res.writeHead(200, { 'Content-Type': 'text/plain' });
-      res.end();
+      Promise.allSettled([textPromise, imagePromise]).then((results) => {
+        const textResult = results[0];
+        const imageResult = results[1];
+
+        if (textResult.status === "fulfilled" && imageResult.status === "fulfilled") {
+          console.log("yay");
+          res.writeHead(200, { 'Content-Type': 'text/plain' });
+          res.end();
+          return;
+        }
+
+        if (imageResult.status === "rejected") {
+          const error = imageResult.reason;
+
+          res.writeHead(500, { "Content-Type": "text/plain" });
+          res.end("500 - Internal Server Error");
+          logMsg("e", "Error while processing request: " + error.message);
+
+          if (textResult.status === "fulfilled") {
+            const before = textResult.value;
+            fsp.writeFile(__dirname + "/assets/imgconfig.json", before).catch((innerError) => {
+              logMsg("fe", "Could not reset imgconfig.json: " + innerError.message + " because " + error.message);
+            });
+          }
+          return;
+        }
+
+        if (textResult.status === "rejected") {
+          const error = textResult.reason;
+          res.writeHead(500, { "Content-Type": "text/plain" });
+          res.end("500 - Internal Server Error: Error while processing text");
+          logMsg("e", "Error while processing request: " + error.message);
+        }
+      });
     });
   } else {
     res.writeHead(405, { "Content-Type": "text/plain" });
@@ -380,5 +386,3 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT);
-
-/*fsp.writeFile(path, base64Image, "base64")*/

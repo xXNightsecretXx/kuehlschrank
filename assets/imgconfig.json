@@ -2,16 +2,26 @@
     "2025": {
         "07-19": [
             {
-                "alts": ["Schwarze Banane"],
-                "descriptions": ["Der Lachs sieht auch nicht mehr so gut aus"]
+                "alts": [
+                    "Schwarze Banane"
+                ],
+                "descriptions": [
+                    "Der Lachs sieht auch nicht mehr so gut aus"
+                ]
             }
         ]
     },
     "2026": {
         "05-23": [
             {
-                "alts": ["Milch abgelaufen seit August 2025", "Eisflaschen"],
-                "descriptions": ["",  "Da ist noch Kohlensäure drin"]
+                "alts": [
+                    "Milch abgelaufen seit August 2025",
+                    "Eisflaschen"
+                ],
+                "descriptions": [
+                    "",
+                    "Da ist noch Kohlensäure drin"
+                ]
             }
         ]
     }
