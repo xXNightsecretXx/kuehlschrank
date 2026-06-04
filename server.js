@@ -163,7 +163,25 @@ async function updateImgConfig(date, alttext, description) {
 }
 
 async function updateImg(date, data) {
-  
+  if (isNaN(new Date(date)) || date.indexOf(" ") > -1) {throw new Error("invalid date");}
+  const mainPath = __dirname + `/assets/img/${date.slice(0, 4)}/${date.slice(5, 10)}`
+  const previewPath = __dirname + `/assets/preview/${date.slice(0, 4)}/${date.slice(5, 10)}`
+
+  const binaryString = atob(base64);
+  let bytes = new Uint8Array(binaryString.length);
+  for (var i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  const buffer = bytes.buffer
+
+  const mainImage = await sharp(inputBuffer)
+    .webp()
+    .toFile(mainPath);
+
+  const previewImage = await sharp(inputBuffer)
+    .resize(128)
+    .webp({quality: 50})
+    .toFile(previewPath);
 }
 
 //-----------------------------------------------------------------------------
