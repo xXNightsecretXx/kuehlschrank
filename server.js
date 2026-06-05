@@ -19,8 +19,8 @@ const PORT = 3000;
 function logMsg(type, msg) {
   // don't use for logging HTTP
   const time = new Date().toTimeString().split(' ')[0];
-  if (type == "error" || type == "e")        {console.log(`[${time}] \x1b[97m\x1b[41m ERROR \x1b[0m ${msg}`)}
-  else if (type == "ferror" || type == "fe") {console.log(`[${time}] \x1b[97m\x1b[41m FATAL ERROR \x1b[0m ${msg}`)}
+  if (type == "error" || type == "e")        {console.error(`[${time}] \x1b[97m\x1b[41m ERROR \x1b[0m ${msg}`)}
+  else if (type == "ferror" || type == "fe") {console.error(`[${time}] \x1b[97m\x1b[41m FATAL ERROR \x1b[0m ${msg}`)}
   else if (type == "warning" || type == "w") {console.log(`[${time}] \x1b[97m\x1b[43m WARNING \x1b[0m ${msg}`)}
   else                                       {console.log(`[${time}] \x1b[97m\x1b[46m INFO \x1b[0m ${msg}`)}
 }
@@ -249,7 +249,7 @@ const server = http.createServer((req, res) => {
 
       archive.on("error", (err) => {
           res.end();
-          logMsg("e", err.message);
+          logMsg("e", err);
       });
 
       archive.pipe(res);
@@ -320,7 +320,7 @@ const server = http.createServer((req, res) => {
       } catch (err) {
         res.writeHead(400, { "Content-Type": "text/plain" });
         res.end("400 - Bad Request");
-        logMsg("e", "Could not parse request content: " + err.message);
+        logMsg("e", "Could not parse request content: " + err);
         return;
       }
 
@@ -361,26 +361,27 @@ const server = http.createServer((req, res) => {
         }
 
         if (imageResult.status === "rejected") {
-          const error = imageResult.reason;
+          const err = imageResult.reason;
 
           res.writeHead(500, { "Content-Type": "text/plain" });
           res.end("500 - Internal Server Error");
-          logMsg("e", "Error while processing request: " + error.message);
+          logMsg("e", "Error while processing request: " + err);
 
           if (textResult.status === "fulfilled") {
             const before = textResult.value;
-            fsp.writeFile(path.join(__dirname, "/assets/imgconfig.json"), before).catch((innerError) => {
-              logMsg("fe", "Could not reset imgconfig.json: " + innerError.message + " because " + error.message);
+            fsp.writeFile(path.join(__dirname, "/assets/imgconfig.json"), before).catch((innerErr) => {
+              logMsg("fe", "Could not reset imgconfig.json: " + innerErr.message + " because " + err.message);
+              throw AggregateError([err, innerErr])
             });
           }
           return;
         }
 
         if (textResult.status === "rejected") {
-          const error = textResult.reason;
+          const err = textResult.reason;
           res.writeHead(500, { "Content-Type": "text/plain" });
           res.end("500 - Internal Server Error: Error while processing text");
-          logMsg("e", "Error while processing request: " + error.message);
+          logMsg("e", "Error while processing request: " + err);
         }
       });
     });
@@ -395,14 +396,15 @@ const server = http.createServer((req, res) => {
     req.pipe(unzipStream);
 
     unzipStream.on("close", () => {
+      logMsg("i", "Archive successfully uploaded")
       res.writeHead(200, { "Content-Type": "text/plain" });
       res.end("Received");
     });
 
     unzipStream.on("error", (err) => {
-      console.error(err);
+      logMsg("e", err)
       res.writeHead(500, { "Content-Type": "text/plain" });
-      res.end("500 - Internal Server Error");
+      res.end("500 - Internal Server Error: File Must be a ZIP archive");
     });
   } else {
     res.writeHead(405, { "Content-Type": "text/plain" });

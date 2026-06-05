@@ -1,6 +1,6 @@
 const SALT = "35c29552e318015e";
 const N = 4094;
-const SERVERURL = "https://kuehlschrank.farni.ng";
+const SERVERURL = "http://localhost:3000";
 
 document.getElementsByTagName("html")[0].scrollTop = 0
 
