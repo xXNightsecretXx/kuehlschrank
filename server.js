@@ -7,7 +7,7 @@ import path from "path";
 import {dirname} from "path";
 import sharp from "sharp";
 import {ulid} from "ulid";
-import {unzip} from "unzipper";
+import unzipper from "unzipper";
 import {fileURLToPath} from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -391,22 +391,18 @@ const server = http.createServer((req, res) => {
 
     if (authenticateRequest(req, res)) {return;}
 
-    let body = '';
-    req.on('data', chunk => {body += chunk;});
+    const unzipStream = unzipper.Extract({path: path.join(__dirname, "assets")});
+    req.pipe(unzipStream);
 
-    req.on('end', () => {
-      try {
-        console.log(body)
-      } catch (err) {
-        res.writeHead(400, { "Content-Type": "text/plain" });
-        res.end("400 - Bad Request");
-        logMsg("e", "Could not parse request content: " + err.message);
-        return;
-      }
-
-      console.log(body)
+    unzipStream.on("close", () => {
       res.writeHead(200, { "Content-Type": "text/plain" });
-      res.end();
+      res.end("Received");
+    });
+
+    unzipStream.on("error", (err) => {
+      console.error(err);
+      res.writeHead(500, { "Content-Type": "text/plain" });
+      res.end("500 - Internal Server Error");
     });
   } else {
     res.writeHead(405, { "Content-Type": "text/plain" });
