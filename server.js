@@ -110,7 +110,7 @@ async function buildTimeline() {
       return [yearElement(year), dates];
     });}))
   );})
-  .then(htmlList => {return htmlList.flat(Infinity).join("").replace(/\$\{\{SIDE\}\}\$([^$]*)\$\{\{SIDE\}\}\$/g, 'top$1bottom');});
+  .then(htmlList => {return htmlList.flat(Infinity).join("").replace(/\$\{\{SIDE\}\}\$([^$]*)\$\{\{SIDE\}\}\$/g, 'top$1bottom').replace(/\$\{\{SIDE\}\}\$/g, "top");});
 }
 
 async function buildImageView() {
