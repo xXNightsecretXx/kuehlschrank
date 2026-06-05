@@ -143,7 +143,7 @@ async function templateReplace(str, replace, res) {
 //-----------------------------------------------------------------------------
 
 async function updateImgConfig(date, alttext, description) {
-  const imgconfigPath = __dirname + "/assets/imgconfig.json";
+  const imgconfigPath = path.join(__dirname, "assets/imgconfig.json");
 
   if (isNaN(new Date(date)) || date.indexOf(" ") > -1) {throw new Error("invalid date");}
 
@@ -167,8 +167,8 @@ async function updateImgConfig(date, alttext, description) {
 async function updateImg(date, data) {
   if (isNaN(new Date(date)) || date.indexOf(" ") > -1) {throw new Error("invalid date");}
   const _ulid = ulid()
-  const mainPath = __dirname + `/assets/img/${date.slice(0, 4)}/${date.slice(5, 10)}`
-  const previewPath = __dirname + `/assets/preview/${date.slice(0, 4)}/${date.slice(5, 10)}`
+  const mainPath = `${__dirname}/assets/img/${date.slice(0, 4)}/${date.slice(5, 10)}`
+  const previewPath = `${__dirname}/assets/preview/${date.slice(0, 4)}/${date.slice(5, 10)}`
 
   await Promise.all([
     fsp.mkdir(mainPath, {recursive: true}),
@@ -369,7 +369,7 @@ const server = http.createServer((req, res) => {
 
           if (textResult.status === "fulfilled") {
             const before = textResult.value;
-            fsp.writeFile(__dirname + "/assets/imgconfig.json", before).catch((innerError) => {
+            fsp.writeFile(path.join(__dirname, "/assets/imgconfig.json"), before).catch((innerError) => {
               logMsg("fe", "Could not reset imgconfig.json: " + innerError.message + " because " + error.message);
             });
           }
