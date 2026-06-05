@@ -95,7 +95,24 @@ document.getElementById("upload").addEventListener("submit", (e) => {
   }
 })
 
-/*---Download Assets---------------*/
+/*---Upload Archive----------------*/
+document.getElementById("archive-upload").addEventListener("submit", (e) => {
+  e.preventDefault();
+  
+  const file = document.getElementById("archive-upload-file").files[0];
+  if (file) {
+    fetch(SERVERURL, {
+      method: "PUT",
+      headers: {
+        "Authorization": key,
+        "Content-Type": "application/zip"
+      },
+      body: file
+    });
+  }
+});
+
+/*---Download Archive--------------*/
 async function downloadArchive() {
   const request = await fetch(SERVERURL + "/assets", {
     method: "GET",

@@ -383,6 +383,30 @@ const server = http.createServer((req, res) => {
         }
       });
     });
+  } else if (req.method == "PUT") {
+    console.log("[" + new Date().toTimeString().split(' ')[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
+            + (req.headers['X-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
+            + " \x1b[97m\x1b[45m PUT \x1b[0m");
+
+    if (authenticateRequest(req, res)) {return;}
+
+    let body = '';
+    req.on('data', chunk => {body += chunk;});
+
+    req.on('end', () => {
+      try {
+        console.log(body)
+      } catch (err) {
+        res.writeHead(400, { "Content-Type": "text/plain" });
+        res.end("400 - Bad Request");
+        logMsg("e", "Could not parse request content: " + err.message);
+        return;
+      }
+
+      console.log(body)
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.end();
+    });
   } else {
     res.writeHead(405, { "Content-Type": "text/plain" });
     res.end("405 - Method Not Allowed");
