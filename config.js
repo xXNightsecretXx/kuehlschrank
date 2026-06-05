@@ -78,7 +78,6 @@ document.getElementById("upload").addEventListener("submit", (e) => {
       data["alttext"] = document.getElementById("upload-alt-text").value;
       data["description"] = document.getElementById("upload-description").value;
       data["data"] = reader.result;
-      console.log(data);
 
       fetch("http://localhost:3000", {
         method: "POST",

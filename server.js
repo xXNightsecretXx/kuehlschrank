@@ -26,8 +26,8 @@ function logMsg(type, msg) {
 
 function authenticateRequest(req, res) {
   let key = req.headers["authorization"];
-  logMsg("i", "Authorization of " + req.method + " request...")
-  if (key && crypto.createHash('sha512').update(key).digest('hex') != KEY) {
+  logMsg("i", "Authorization of " + req.method + " request...");
+  if (!key || crypto.createHash('sha512').update(key).digest('hex') != KEY) {
     res.writeHead(401, { "Content-Type": "text/plain" });
     res.end("401 - Unauthorized");
     logMsg("w", "401 Authorization failed with key: " + key)
@@ -331,7 +331,7 @@ const server = http.createServer((req, res) => {
       }
 
       const base64Image = body.data.split('base64,').pop();
-      if (!/^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/.test(base64Image)) {
+      try {atob(base64Image)} catch {
         res.writeHead(400, { "Content-Type": "text/plain" });
         res.end("400 - Bad Request: invalid base64 string");
         logMsg("e", "Error while processing request: invalid base64 string");
