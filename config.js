@@ -2,6 +2,8 @@ const SALT = "35c29552e318015e";
 const N = 4094;
 const SERVERURL = "http://localhost:3000";
 
+document.getElementsByTagName("html")[0].scrollTop = 0
+
 async function sha512(str) {
   const buffer = await crypto.subtle.digest("SHA-512", new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buffer)).map(byte => byte.toString(16).padStart(2, "0")).join("");
@@ -60,7 +62,9 @@ let key;
 
 keyInput.addEventListener('keydown', e => {
   if (e.key == "Enter") {
-    keyInputWrapper.style.display = 'none';
+    keyInputWrapper.style.display = "none";
+    document.getElementsByTagName("body")[0].style["overflow-y"] = "auto";
+    document.getElementsByTagName("body")[0].style["scrollbarGutter"] = "stable";
     stretch(keyInput.value + SALT, N).then(k => {key = k;});
     keyInput.value = "";
   }
