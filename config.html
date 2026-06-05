@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <title>Farning Kühlschrankarchiv</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="height=device-height, initial-scale=1.0, minimum-scale=1.0">
+    <meta name="description" content="Farning Kühlschrankarchiv">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="config.css">
+    <link rel="stylesheet" href="mobile.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+  </head>
+
+  <body>
+    <section>
+      <div class="title-wrapper"><h1 id="title"><a href="/">Farning Kühlschrankarchiv</a></h1></div>
+      <button id="theme-toggle" type="button" class="btn btn-icon">
+        <svg id="icon-sun" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <svg id="icon-moon" class="icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
+      <div id="key-input-wrapper-wrapper">
+        <h3>Schlüssel Eingeben</h3>
+        <div id="key-input-wrapper">
+          <input type="password" id="key-input" placeholder="">
+          <label id="key-input-label">Schlüssel</label>
+        </div>
+      </div>
+    </section>
+    <div class="forms-wrapper">
+      <form id="upload">
+        <h3>Bilder Hochladen</h3>
+        <input required id="upload-file" type="file" accept="image/avif, image/bmp, image/gif, image/jpeg, image/tiff, image/png, image/webp">
+        <input required id="upload-date" type="date">
+        <label>Datum *</label>
+        <input required id="upload-alt-text" placeholder="">
+        <label>Alternativtext *</label>
+        <input id="upload-description" placeholder="">
+        <label>Beschreibung</label>
+        <button id ="upload-submit" class="btn btn-medium btn-submit" type="submit"><b>Hochladen</b></button>
+      </form>
+      <form id="download">
+        <h3>Bilder Herunterladen</h3>
+        <button id ="download-submit" class="btn btn-medium btn-submit" type="submit"><b>ZIP-Archiv Herunterladen</b></button>
+      </form>
+    </div>
+    <script src="config.js" defer></script>
+  </body>
+</html>
