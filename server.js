@@ -188,7 +188,7 @@ async function updateImg(date, data) {
 
     sharp(buffer)
     .resize(128)
-    .webp({quality: 50})
+    .webp({quality: 80})
     .toFile(`${previewPath}/${_ulid}.webp`)
   ]);
   return [`${mainPath}/${_ulid}.webp`, `${previewPath}/${_ulid}.webp`]
