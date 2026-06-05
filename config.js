@@ -1,5 +1,6 @@
-const SALT = "35c29552e318015e"
-const N = 4094
+const SALT = "35c29552e318015e";
+const N = 4094;
+const SERVERURL = "https://kuehlschrank.farni.ng";
 
 async function sha512(str) {
   const buffer = await crypto.subtle.digest("SHA-512", new TextEncoder().encode(str));
@@ -79,7 +80,7 @@ document.getElementById("upload").addEventListener("submit", (e) => {
       data["description"] = document.getElementById("upload-description").value;
       data["data"] = reader.result;
 
-      fetch("http://localhost:3000", {
+      fetch(SERVERURL, {
         method: "POST",
         headers: {
           "Authentication": key
@@ -92,7 +93,7 @@ document.getElementById("upload").addEventListener("submit", (e) => {
 
 /*---Download Assets---------------*/
 async function downloadArchive() {
-  const request = await fetch("http://localhost:3000/assets", {
+  const request = await fetch(SERVERURL + "/assets", {
     method: "GET",
     headers: {
       "Authorization": key,
