@@ -7,6 +7,7 @@ import path from "path";
 import {dirname} from "path";
 import sharp from "sharp";
 import {ulid} from "ulid";
+import {unzip} from "unzipper";
 import {fileURLToPath} from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
