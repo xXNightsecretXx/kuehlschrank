@@ -1,6 +1,6 @@
 const SALT = "35c29552e318015e";
 const N = 4094;
-const SERVERURL = "https://kuehlschrank.farni.ng";
+const SERVERURL = "http://localhost:3000";
 
 async function sha512(str) {
   const buffer = await crypto.subtle.digest("SHA-512", new TextEncoder().encode(str));

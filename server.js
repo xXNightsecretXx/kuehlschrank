@@ -154,7 +154,7 @@ async function updateImgConfig(date, alttext, description) {
 
   if (!imageJSON[year]) {imageJSON[year] = {};}
   if (!imageJSON[date]) {imageJSON[year][date] = {"alts": [], "descriptions": []};}
-  console.log(imageJSON)
+
   imageJSON[year][date]["alts"].push(alttext);
   imageJSON[year][date]["descriptions"].push(description);
 
