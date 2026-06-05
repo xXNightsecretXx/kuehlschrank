@@ -83,7 +83,7 @@ document.getElementById("upload").addEventListener("submit", (e) => {
       fetch(SERVERURL, {
         method: "POST",
         headers: {
-          "Authentication": key
+          "Authorization": key
         },
         body: JSON.stringify(data)
       })
