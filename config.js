@@ -60,7 +60,7 @@ let key;
 keyInput.addEventListener('keydown', e => {
   if (e.key == "Enter") {
     keyInputWrapper.style.display = 'none';
-    stretch(keyInput.value + SALT, N).then(key => console.log(key));
+    stretch(keyInput.value + SALT, N).then(k => {key = k;});
     keyInput.value = "";
   }
 });
@@ -96,11 +96,13 @@ async function downloadArchive() {
     method: "GET",
     headers: {
       "Authorization": key,
-      "Content-Type": "application/json"
     }
   });
 
-  if (!request.ok) {console.error("Download failed: " + request.status);return;}
+  if (!request.ok) {
+    console.error("Download failed: " + request.status);
+    return;
+  }
 
   const blob = await request.blob();
   const downloadUrl = window.URL.createObjectURL(blob);
@@ -115,3 +117,8 @@ async function downloadArchive() {
   document.body.removeChild(anchor);
   window.URL.revokeObjectURL(downloadUrl);
 }
+
+document.getElementById("download").addEventListener("submit", (e) => {
+  e.preventDefault();
+  downloadArchive();
+});
