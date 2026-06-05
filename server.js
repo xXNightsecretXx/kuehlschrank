@@ -103,7 +103,7 @@ async function buildTimeline() {
         Promise.all(images.map(image => {                                                                          /* image promises */
           return `assets/preview/${year}/${date}/${image}`;
         })).then(imageURIs => {return dateElement(
-          date, imageJSON[year][date][0]["alts"][0], imageURIs, imageJSON[year][date][0]["alts"]
+          date, imageJSON[year][date]["alts"][0], imageURIs, imageJSON[year][date]["alts"]
         );})
       );});}))
     );}).then(dates => {
@@ -119,7 +119,7 @@ async function buildImageView() {
   return fsp.readdir("assets/img").then(years => {return (
     Promise.all(years.map(year => {return fsp.readdir(`assets/img/${year}`).then(dates => {return (            /*  year promises */
       Promise.all(dates.map(date => {return fsp.readdir(`assets/img/${year}/${date}`).then(images => {return ( /*  date promises */
-        imageElements(`assets/img/${year}/${date}/`, images, imageJSON[year][date][0]["alts"], imageJSON[year][date][0]["descriptions"])
+        imageElements(`assets/img/${year}/${date}/`, images, imageJSON[year][date]["alts"], imageJSON[year][date]["descriptions"])
       );});}))
     );});}))
   );})
@@ -155,8 +155,8 @@ async function updateImgConfig(date, alttext, description) {
   if (!imageJSON[year]) {imageJSON[year] = {};}
   if (!imageJSON[date]) {imageJSON[year][date] = [{"alts": [], "descriptions": []}];}
 
-  imageJSON[year][date][0]["alts"].push(alttext);
-  imageJSON[year][date][0]["descriptions"].push(description);
+  imageJSON[year][date]["alts"].push(alttext);
+  imageJSON[year][date]["descriptions"].push(description);
 
   await fsp.writeFile(imgconfigPath, JSON.stringify(imageJSON, null, 4));
 
