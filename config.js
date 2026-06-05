@@ -2,6 +2,8 @@ const SALT = "35c29552e318015e";
 const N = 4094;
 const SERVERURL = "https://kuehlschrank.farni.ng";
 
+document.getElementsByTagName("html")[0].scrollTop = 0
+
 async function sha512(str) {
   const buffer = await crypto.subtle.digest("SHA-512", new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buffer)).map(byte => byte.toString(16).padStart(2, "0")).join("");
@@ -60,7 +62,9 @@ let key;
 
 keyInput.addEventListener('keydown', e => {
   if (e.key == "Enter") {
-    keyInputWrapper.style.display = 'none';
+    keyInputWrapper.style.display = "none";
+    document.getElementsByTagName("body")[0].style["overflow-y"] = "auto";
+    document.getElementsByTagName("body")[0].style["scrollbarGutter"] = "stable";
     stretch(keyInput.value + SALT, N).then(k => {key = k;});
     keyInput.value = "";
   }
@@ -91,7 +95,24 @@ document.getElementById("upload").addEventListener("submit", (e) => {
   }
 })
 
-/*---Download Assets---------------*/
+/*---Upload Archive----------------*/
+document.getElementById("archive-upload").addEventListener("submit", (e) => {
+  e.preventDefault();
+  
+  const file = document.getElementById("archive-upload-file").files[0];
+  if (file) {
+    fetch(SERVERURL, {
+      method: "PUT",
+      headers: {
+        "Authorization": key,
+        "Content-Type": "application/zip"
+      },
+      body: file
+    });
+  }
+});
+
+/*---Download Archive--------------*/
 async function downloadArchive() {
   const request = await fetch(SERVERURL + "/assets", {
     method: "GET",

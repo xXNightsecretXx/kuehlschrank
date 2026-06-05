@@ -7,6 +7,7 @@ import path from "path";
 import {dirname} from "path";
 import sharp from "sharp";
 import {ulid} from "ulid";
+import unzipper from "unzipper";
 import {fileURLToPath} from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -142,7 +143,7 @@ async function templateReplace(str, replace, res) {
 //-----------------------------------------------------------------------------
 
 async function updateImgConfig(date, alttext, description) {
-  const imgconfigPath = __dirname + "/assets/imgconfig.json";
+  const imgconfigPath = path.join(__dirname, "assets/imgconfig.json");
 
   if (isNaN(new Date(date)) || date.indexOf(" ") > -1) {throw new Error("invalid date");}
 
@@ -154,7 +155,7 @@ async function updateImgConfig(date, alttext, description) {
 
   if (!imageJSON[year]) {imageJSON[year] = {};}
   if (!imageJSON[date]) {imageJSON[year][date] = {"alts": [], "descriptions": []};}
-  console.log(imageJSON)
+
   imageJSON[year][date]["alts"].push(alttext);
   imageJSON[year][date]["descriptions"].push(description);
 
@@ -166,8 +167,8 @@ async function updateImgConfig(date, alttext, description) {
 async function updateImg(date, data) {
   if (isNaN(new Date(date)) || date.indexOf(" ") > -1) {throw new Error("invalid date");}
   const _ulid = ulid()
-  const mainPath = __dirname + `/assets/img/${date.slice(0, 4)}/${date.slice(5, 10)}`
-  const previewPath = __dirname + `/assets/preview/${date.slice(0, 4)}/${date.slice(5, 10)}`
+  const mainPath = `${__dirname}/assets/img/${date.slice(0, 4)}/${date.slice(5, 10)}`
+  const previewPath = `${__dirname}/assets/preview/${date.slice(0, 4)}/${date.slice(5, 10)}`
 
   await Promise.all([
     fsp.mkdir(mainPath, {recursive: true}),
@@ -368,7 +369,7 @@ const server = http.createServer((req, res) => {
 
           if (textResult.status === "fulfilled") {
             const before = textResult.value;
-            fsp.writeFile(__dirname + "/assets/imgconfig.json", before).catch((innerError) => {
+            fsp.writeFile(path.join(__dirname, "/assets/imgconfig.json"), before).catch((innerError) => {
               logMsg("fe", "Could not reset imgconfig.json: " + innerError.message + " because " + error.message);
             });
           }
@@ -382,6 +383,26 @@ const server = http.createServer((req, res) => {
           logMsg("e", "Error while processing request: " + error.message);
         }
       });
+    });
+  } else if (req.method == "PUT") {
+    console.log("[" + new Date().toTimeString().split(' ')[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
+            + (req.headers['X-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
+            + " \x1b[97m\x1b[45m PUT \x1b[0m");
+
+    if (authenticateRequest(req, res)) {return;}
+
+    const unzipStream = unzipper.Extract({path: path.join(__dirname, "assets")});
+    req.pipe(unzipStream);
+
+    unzipStream.on("close", () => {
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.end("Received");
+    });
+
+    unzipStream.on("error", (err) => {
+      console.error(err);
+      res.writeHead(500, { "Content-Type": "text/plain" });
+      res.end("500 - Internal Server Error");
     });
   } else {
     res.writeHead(405, { "Content-Type": "text/plain" });

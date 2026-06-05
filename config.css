@@ -64,6 +64,7 @@ form {
   display: grid;
   gap: 32px;
   grid-template-columns: repeat(auto-fit, minmax(max(calc((100% - 64px) / 3), min(480px, 100%)), 1fr));
+  margin-bottom: 20px;
 }
 
 input {
@@ -94,6 +95,7 @@ input + label {
   pointer-events: none;
   transform: translateX(24px) translateY(-30px);
   transition: .15s;
+  width: max-content;
 }
 
 input:focus + label {
