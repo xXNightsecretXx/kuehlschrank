@@ -18,7 +18,7 @@ const PORT = 3000;
 
 function logMsg(type, msg) {
   // don't use for logging HTTP
-  const time = new Date().toTimeString().split(' ')[0];
+  const time = new Date().toTimeString().split(" ")[0];
   if (type == "error" || type == "e")        {console.error(`[${time}] \x1b[97m\x1b[41m ERROR \x1b[0m ${msg}`)}
   else if (type == "ferror" || type == "fe") {console.error(`[${time}] \x1b[97m\x1b[41m FATAL ERROR \x1b[0m ${msg}`)}
   else if (type == "warning" || type == "w") {console.log(`[${time}] \x1b[97m\x1b[43m WARNING \x1b[0m ${msg}`)}
@@ -28,10 +28,22 @@ function logMsg(type, msg) {
 function authenticateRequest(req, res) {
   let key = req.headers["authorization"];
   logMsg("i", "Authorization of " + req.method + " request...");
-  if (!key || crypto.createHash('sha512').update(key).digest('hex') != KEY) {
+  if (!key || crypto.createHash("sha512").update(key).digest("hex") != KEY) {
     res.writeHead(401, { "Content-Type": "text/plain" });
     res.end("401 - Unauthorized");
-    logMsg("w", "401 Authorization failed with key: " + key)
+    logMsg("w", "-> 401 Authorization failed with key: " + key)
+    return true;
+  }
+  logMsg("i", "Authorization succeeded")
+}
+
+function authenticateRequestHide(req, res) {
+  let key = req.headers["authorization"];
+  logMsg("i", "Authorization of " + req.method + " request...");
+  if (!key || crypto.createHash("sha512").update(key).digest("hex") != KEY) {
+    res.writeHead(404, { "Content-Type": "text/plain" });
+    res.end("404 - Not Found");
+    logMsg("w", "-> 404 Authorization failed with key: " + key)
     return true;
   }
   logMsg("i", "Authorization succeeded")
@@ -111,7 +123,7 @@ async function buildTimeline() {
       return [yearElement(year), dates];
     });}))
   );})
-  .then(htmlList => {return htmlList.flat(Infinity).join("").replace(/\$\{\{SIDE\}\}\$([^$]*)\$\{\{SIDE\}\}\$/g, 'top$1bottom').replace(/\$\{\{SIDE\}\}\$/g, "top");});
+  .then(htmlList => {return htmlList.flat(Infinity).join("").replace(/\$\{\{SIDE\}\}\$([^$]*)\$\{\{SIDE\}\}\$/g, "top$1bottom").replace(/\$\{\{SIDE\}\}\$/g, "top");});
 }
 
 async function buildImageView() {
@@ -213,8 +225,8 @@ const server = http.createServer((req, res) => {
     res.end();
     return;
   } else if (req.method == "GET") {
-    console.log("[" + new Date().toTimeString().split(' ')[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
-                + (req.headers['X-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
+    console.log("[" + new Date().toTimeString().split(" ")[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
+                + (req.headers["X-forwarded-for"]?.split(",")[0].trim() || req.socket.remoteAddress)
                 + " \x1b[97m\x1b[42m GET \x1b[0m " + req.url);
 
     // parse URL
@@ -232,9 +244,8 @@ const server = http.createServer((req, res) => {
     try {
       stats = fs.lstatSync(filePath);
     } catch (e) {
-      res.writeHead(404, { 'Content-Type': 'text/plain' });
-      res.write('404 - Not Found\n');
-      res.end();
+      res.writeHead(404, { "Content-Type": "text/plain" });
+      res.end("404 - Not Found");
       return;
     }
 
@@ -262,17 +273,28 @@ const server = http.createServer((req, res) => {
 
     // check if file exists and is not a directory
     if (stats.isDirectory()) {
-      res.writeHead(404, { 'Content-Type': 'text/plain' });
-      res.write('404 - Not Found\n');
-      res.end();
+      if (authenticateRequestHide(req, res)) {return;}
+      if (pathname.startsWith("/assets/img")) {
+        fsp.readdir(filePath).then((content) => {
+          content.sort();
+          res.writeHead(200, { "Content-Type": "application/json" })
+          res.end(JSON.stringify({data: content}));
+        }).catch((err) => {
+          res.writeHead(500, { "Content-Type": "text/plain" });
+          res.end("500 - Internal Server Error");
+          logMsg("e", err);
+        })
+        return;
+      }
+      res.writeHead(404, { "Content-Type": "text/plain" });
+      res.end("404 - Not Found");
       return;
     }
 
     const blockList = ["/assets/imgconfig.json", "/old/index-old.html"]
     if (blockList.indexOf(pathname) > -1) {
-      res.writeHead(403, { 'Content-Type': 'text/plain' });
-      res.write('403 - Forbidden\n');
-      res.end();
+      res.writeHead(403, { "Content-Type": "text/plain" });
+      res.end("403 - Forbidden");
       return;
     }
 
@@ -307,16 +329,16 @@ const server = http.createServer((req, res) => {
       res.end();
     });
   } else if (req.method == "POST") {
-    console.log("[" + new Date().toTimeString().split(' ')[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
-                + (req.headers['X-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
+    console.log("[" + new Date().toTimeString().split(" ")[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
+                + (req.headers["X-forwarded-for"]?.split(",")[0].trim() || req.socket.remoteAddress)
                 + " \x1b[97m\x1b[45m POST \x1b[0m");
 
     if (authenticateRequest(req, res)) {return;}
 
-    let body = '';
-    req.on('data', chunk => {body += chunk;});
+    let body = "";
+    req.on("data", chunk => {body += chunk;});
 
-    req.on('end', () => {
+    req.on("end", () => {
       try {
         body = JSON.parse(body)
       } catch (err) {
@@ -333,7 +355,7 @@ const server = http.createServer((req, res) => {
         return;
       }
 
-      const base64Image = body.data.split('base64,').pop();
+      const base64Image = body.data.split("base64,").pop();
       try {atob(base64Image)} catch {
         res.writeHead(400, { "Content-Type": "text/plain" });
         res.end("400 - Bad Request: invalid base64 string");
@@ -357,7 +379,7 @@ const server = http.createServer((req, res) => {
 
         if (textResult.status === "fulfilled" && imageResult.status === "fulfilled") {
           logMsg("i", "Image successfully saved")
-          res.writeHead(200, { 'Content-Type': 'text/plain' });
+          res.writeHead(200, { "Content-Type": "text/plain" });
           res.end();
           return;
         }
@@ -390,8 +412,8 @@ const server = http.createServer((req, res) => {
       });
     });
   } else if (req.method == "PUT") {
-    console.log("[" + new Date().toTimeString().split(' ')[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
-            + (req.headers['X-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
+    console.log("[" + new Date().toTimeString().split(" ")[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
+            + (req.headers["X-forwarded-for"]?.split(",")[0].trim() || req.socket.remoteAddress)
             + " \x1b[97m\x1b[45m PUT \x1b[0m");
 
     if (authenticateRequest(req, res)) {return;}
@@ -413,8 +435,8 @@ const server = http.createServer((req, res) => {
   } else {
     res.writeHead(405, { "Content-Type": "text/plain" });
     res.end("405 - Method Not Allowed");
-    console.log("[" + new Date().toTimeString().split(' ')[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
-                + (req.headers['X-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)
+    console.log("[" + new Date().toTimeString().split(" ")[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
+                + (req.headers["X-forwarded-for"]?.split(",")[0].trim() || req.socket.remoteAddress)
                 + " \x1b[97m\x1b[41m " + req.method + " \x1b[0m " + "\x1b[31m(405)\x1b[0m");
     return;
   }
