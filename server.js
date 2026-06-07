@@ -222,6 +222,8 @@ const server = http.createServer((req, res) => {
     let pathname = parsedUrl.pathname;
     if (pathname === "/") {
       pathname = "/index.html";
+    } else if (pathname === "/config" || pathname === "/upload") {
+      pathname = "/config.html";
     }
     const filePath = path.join(__dirname, pathname);
 
