@@ -432,6 +432,38 @@ const server = http.createServer((req, res) => {
       res.writeHead(500, { "Content-Type": "text/plain" });
       res.end("500 - Internal Server Error: File Must be a ZIP archive");
     });
+  } else if (req.method == "DELETE") {
+    console.log("[" + new Date().toTimeString().split(" ")[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
+                + (req.headers["X-forwarded-for"]?.split(",")[0].trim() || req.socket.remoteAddress)
+                + " \x1b[97m\x1b[41m DELETE \x1b[0m " + req.url);
+
+    if (authenticateRequest(req, res)) {return;}
+  
+    // parse URL
+    const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
+    let pathname = parsedUrl.pathname;
+    const filePath = path.join(__dirname, pathname);
+    
+    if (!pathname.startsWith("/assets/") || ["/assets/imgconfig.json"].indexOf(pathname) > -1) {
+      res.writeHead(403, { "Content-Type": "text/plain" });
+      res.end("403 - Forbidden");
+      return;
+    }
+
+    // check if path exists
+    let stats;
+    try {
+      stats = fs.lstatSync(filePath);
+    } catch (e) {
+      res.writeHead(404, { "Content-Type": "text/plain" });
+      res.end("404 - Not Found");
+      return;
+    }
+
+    fsp.rm(filePath).then(() => {
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.end("Deleted");
+    })
   } else {
     res.writeHead(405, { "Content-Type": "text/plain" });
     res.end("405 - Method Not Allowed");
