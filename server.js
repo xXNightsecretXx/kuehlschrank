@@ -382,6 +382,8 @@ const server = http.createServer((req, res) => {
           res.writeHead(500, { "Content-Type": "text/plain" });
           res.end("500 - Internal Server Error: Error while processing text");
           logMsg("e", "Error while processing request: " + err);
+          fsp.unlink(imageResult[0]).catch(() => {})
+          fsp.unlink(imageResult[1]).catch(() => {})
         }
       });
     });
