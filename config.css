@@ -155,3 +155,32 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   font-family: inherit;
   width: min-content;
 }
+
+#delete {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 12px;
+}
+
+#delete-directory {
+  background: var(--dp1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin: 0 8px;
+  overflow: hidden;
+}
+
+#delete-path {
+  background-color: var(--dp4);
+  margin-bottom: -1px;
+  overflow: auto;
+  padding: 8px;
+}
+
+.delete-object {
+  border-top: 1px solid var(--border);
+  margin-top: -1px;
+  overflow: auto;
+  padding: 4px 8px;
+}

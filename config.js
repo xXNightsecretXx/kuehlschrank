@@ -2,6 +2,8 @@ const SALT = "35c29552e318015e";
 const N = 4094;
 const SERVERURL = "http://localhost:3000";
 
+function $$(selector) {return document.querySelectorAll(selector);};
+
 document.getElementsByTagName("html")[0].scrollTop = 0
 
 async function sha512(str) {
@@ -94,6 +96,27 @@ document.getElementById("upload").addEventListener("submit", (e) => {
     });
   }
 })
+
+/*---Delete Assets-----------------*/
+function deleteElementsOfClass(cls) {
+  var els = document.getElementsByClassName(cls);
+  while(els[0]) {
+      els[0].parentNode.removeChild(els[0]);
+  }
+}
+
+function addEventListeners() {
+  subdirectories = document.getElementsByClassName("delete-object");
+  for (subdirectory of subdirectories) {
+    subdirectory.addEventListener("click", (e) => {
+      console.log(e)
+      const deletionPath = $$("[data-path]")[0];
+      deletionPath.innerHTML = deletionPath.innerHTML + "/" + e.target.innerHTML;
+    })
+  }
+}
+
+addEventListeners();
 
 /*---Upload Archive----------------*/
 document.getElementById("archive-upload").addEventListener("submit", (e) => {
