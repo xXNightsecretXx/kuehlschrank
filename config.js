@@ -67,10 +67,19 @@ keyInput.addEventListener('keydown', e => {
     keyInputWrapper.style.display = "none";
     document.getElementsByTagName("body")[0].style["overflow-y"] = "auto";
     document.getElementsByTagName("body")[0].style["scrollbarGutter"] = "stable";
-    stretch(keyInput.value + SALT, N).then(k => {key = k;});
+    stretch(keyInput.value + SALT, N).then(k => {
+      key = k;
+      afterKeyEnter();
+    });
     keyInput.value = "";
   }
 });
+
+function afterKeyEnter() {
+  generateSubdirs($$("[data-path]")[0].innerHTML).then(() => {
+    addEventListeners();
+  });
+}
 
 /*---Upload Assets-----------------*/
 document.getElementById("upload").addEventListener("submit", (e) => {
@@ -98,6 +107,26 @@ document.getElementById("upload").addEventListener("submit", (e) => {
 })
 
 /*---Delete Assets-----------------*/
+async function generateSubdirs(path) {
+  let res = await fetch(SERVERURL + path, {method: "GET", headers: {"Authorization": key}});
+  let data = await res.text();
+  if (data.startsWith("{")) {
+    data = JSON.parse(data);
+    const directoryList = document.getElementById("delete-directory");
+
+    let dir;
+    for (dirName of data.data) {
+      dir = document.createElement("div");
+      dir.classList.add("delete-object");
+      dir.appendChild(document.createTextNode(dirName));
+      
+      directoryList.appendChild(dir);
+    }
+  } else {
+    console.error("Error:", data);
+  }
+}
+
 function deleteElementsOfClass(cls) {
   var els = document.getElementsByClassName(cls);
   while(els[0]) {
@@ -109,14 +138,15 @@ function addEventListeners() {
   subdirectories = document.getElementsByClassName("delete-object");
   for (subdirectory of subdirectories) {
     subdirectory.addEventListener("click", (e) => {
-      console.log(e)
       const deletionPath = $$("[data-path]")[0];
       deletionPath.innerHTML = deletionPath.innerHTML + "/" + e.target.innerHTML;
+      deleteElementsOfClass("delete-object");
+      generateSubdirs(deletionPath.innerHTML).then(() => {
+        addEventListeners();
+      });
     })
   }
 }
-
-addEventListeners();
 
 /*---Upload Archive----------------*/
 document.getElementById("archive-upload").addEventListener("submit", (e) => {
