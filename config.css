@@ -198,4 +198,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-top: -1px;
   overflow: auto;
   padding: 4px 8px;
+  transition: .15s;
+}
+
+.delete-object:hover {
+  background: var(--dp8);
+}
+
+.delete-object:active {
+  transition: 0s;
+  background: var(--dp1);
 }
