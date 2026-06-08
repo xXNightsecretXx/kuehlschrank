@@ -8,7 +8,7 @@ import {dirname} from "path";
 import sharp from "sharp";
 import {ulid} from "ulid";
 import unzipper from "unzipper";
-import {fileURLToPath} from "url";
+import {fileURLToPath, pathToFileURL} from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -444,7 +444,11 @@ const server = http.createServer((req, res) => {
     let pathname = parsedUrl.pathname;
     const filePath = path.join(__dirname, pathname);
     
-    if (!pathname.startsWith("/assets/") || ["/assets/imgconfig.json"].indexOf(pathname) > -1) {
+    if (!pathname.startsWith("/assets/") || [
+      "/assets/imgconfig.json",
+      "/assets/img",
+      "/assets/preview"
+    ].indexOf(pathname) > -1) {
       res.writeHead(403, { "Content-Type": "text/plain" });
       res.end("403 - Forbidden");
       return;
@@ -460,10 +464,33 @@ const server = http.createServer((req, res) => {
       return;
     }
 
-    fsp.rm(filePath, {recursive: true}).then(() => {
-      res.writeHead(200, { "Content-Type": "text/plain" });
-      res.end("Deleted");
+    fsp.rm(filePath, {recursive: true, force: true})
+    .then(() => fsp.rm(filePath.replace("/img/", "/preview/"), {recursive: true, force: true}))
+    .then(() => {return fsp.readFile(path.join(__dirname, "assets/imgconfig.json"));})
+    .then((data) => {
+      let imageJSON = JSON.parse(data);
+
+      let pathElements = pathname.split("/").slice(3);
+      const child = pathElements.pop();
+      const parent = pathElements.reduce((current, key) => {
+        return current && current[key];
+      }, imageJSON);
+
+      delete parent[child];
+
+      return fsp.writeFile(path.join(__dirname, "assets/imgconfig.json"), JSON.stringify(imageJSON, null, 4));
     })
+    .then(() => {
+        res.writeHead(200, { "Content-Type": "text/plain" });
+        res.end("Deleted");
+        logMsg("i", "Deletion succeeded");
+    })
+    .catch((err) => {
+      res.writeHead(500, { "Content-Type": "text/plain" });
+      res.end("500 - Internal Server Error");
+      logMsg("fe", err);
+      throw err;
+    });
   } else {
     res.writeHead(405, { "Content-Type": "text/plain" });
     res.end("405 - Method Not Allowed");
