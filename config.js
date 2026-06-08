@@ -108,6 +108,8 @@ document.getElementById("upload").addEventListener("submit", (e) => {
 
 /*---Delete Assets-----------------*/
 async function generateSubdirs(path) {
+  if (path.endsWith(".webp")) {return;}
+
   let res = await fetch(SERVERURL + path, {method: "GET", headers: {"Authorization": key}});
   let data = await res.text();
   if (data.startsWith("{")) {
@@ -159,6 +161,12 @@ document.getElementById("delete-up").addEventListener("click", (e) => {
     addEventListeners();
   });
 });
+
+document.getElementById("delete").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const deletionPath = $$("[data-path]")[0].innerHTML;
+  fetch(SERVERURL + deletionPath, {method: "DELETE", headers: {"Authorization": key}});
+})
 
 /*---Upload Archive----------------*/
 document.getElementById("archive-upload").addEventListener("submit", (e) => {

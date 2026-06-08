@@ -460,7 +460,7 @@ const server = http.createServer((req, res) => {
       return;
     }
 
-    fsp.rm(filePath).then(() => {
+    fsp.rm(filePath, {recursive: true}).then(() => {
       res.writeHead(200, { "Content-Type": "text/plain" });
       res.end("Deleted");
     })
