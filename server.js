@@ -111,9 +111,9 @@ async function buildTimeline() {
     hoursWastedOnUnderstandingAndWritingTs = 3;
   */
   return fsp.readdir("assets/preview").then(years => {return (
-    Promise.all(years.map(year => {return fsp.readdir(`assets/preview/${year}`).then(dates => {return (            /*  year promises */
-      Promise.all(dates.map(date => {return fsp.readdir(`assets/preview/${year}/${date}`).then(images => {return ( /*  date promises */
-        Promise.all(images.map(image => {                                                                          /* image promises */
+    Promise.all(years.sort().map(year => {return fsp.readdir(`assets/preview/${year}`).then(dates => {return (            /*  year promises */
+      Promise.all(dates.sort().map(date => {return fsp.readdir(`assets/preview/${year}/${date}`).then(images => {return ( /*  date promises */
+        Promise.all(images.sort().map(image => {                                                                          /* image promises */
           return `assets/preview/${year}/${date}/${image}`;
         })).then(imageURIs => {return dateElement(
           date, imageJSON[year][date]["alts"][0], imageURIs, imageJSON[year][date]["alts"]
@@ -130,9 +130,9 @@ async function buildImageView() {
   const imageJSON = JSON.parse(await fsp.readFile("assets/imgconfig.json", "utf-8"));
 
   return fsp.readdir("assets/img").then(years => {return (
-    Promise.all(years.map(year => {return fsp.readdir(`assets/img/${year}`).then(dates => {return (            /*  year promises */
-      Promise.all(dates.map(date => {return fsp.readdir(`assets/img/${year}/${date}`).then(images => {return ( /*  date promises */
-        imageElements(`assets/img/${year}/${date}/`, images, imageJSON[year][date]["alts"], imageJSON[year][date]["descriptions"])
+    Promise.all(years.sort().map(year => {return fsp.readdir(`assets/img/${year}`).then(dates => {return (            /*  year promises */
+      Promise.all(dates.sort().map(date => {return fsp.readdir(`assets/img/${year}/${date}`).then(images => {return ( /*  date promises */
+        imageElements(`assets/img/${year}/${date}/`, images.sort(), imageJSON[year][date]["alts"], imageJSON[year][date]["descriptions"])
       );});}))
     );});}))
   );})
