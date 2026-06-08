@@ -1,5 +1,6 @@
 body {
   color: var(--text);
+  overflow-y: auto;
 }
 
 a {
@@ -154,4 +155,57 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .btn-submit {
   font-family: inherit;
   width: min-content;
+}
+
+#delete {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 12px;
+}
+
+#delete-directory {
+  background: var(--dp1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin: 0 8px;
+  overflow: hidden;
+}
+
+#delete-path {
+  background-color: var(--dp6);
+  display: flex;
+  margin-bottom: -1px;
+  overflow: auto;
+  padding: 8px;
+}
+
+#delete-up {
+  background: var(--dp6);
+  border: 1px solid #00000000;
+  border-radius: 50%;
+  margin: -5px;
+  margin-left: auto;
+}
+
+#delete-up:hover {
+  background: var(--dp12);
+  border: 1px solid var(--border);
+}
+
+.delete-object {
+  border-top: 1px solid var(--border);
+  margin-top: -1px;
+  overflow: auto;
+  padding: 4px 8px;
+  transition: .15s;
+}
+
+.delete-object:hover {
+  background: var(--dp8);
+}
+
+.delete-object:active {
+  transition: 0s;
+  background: var(--dp1);
 }

@@ -1,6 +1,8 @@
 const SALT = "35c29552e318015e";
 const N = 4094;
-const SERVERURL = "https://kuehlschrank.farni.ng";
+const SERVERURL = "http://localhost:3000";
+
+function $$(selector) {return document.querySelectorAll(selector);};
 
 document.getElementsByTagName("html")[0].scrollTop = 0
 
@@ -65,10 +67,19 @@ keyInput.addEventListener('keydown', e => {
     keyInputWrapper.style.display = "none";
     document.getElementsByTagName("body")[0].style["overflow-y"] = "auto";
     document.getElementsByTagName("body")[0].style["scrollbarGutter"] = "stable";
-    stretch(keyInput.value + SALT, N).then(k => {key = k;});
+    stretch(keyInput.value + SALT, N).then(k => {
+      key = k;
+      afterKeyEnter();
+    });
     keyInput.value = "";
   }
 });
+
+function afterKeyEnter() {
+  generateSubdirs($$("[data-path]")[0].innerHTML).then(() => {
+    addEventListeners();
+  });
+}
 
 /*---Upload Assets-----------------*/
 document.getElementById("upload").addEventListener("submit", (e) => {
@@ -93,6 +104,69 @@ document.getElementById("upload").addEventListener("submit", (e) => {
       })
     });
   }
+})
+
+/*---Delete Assets-----------------*/
+async function generateSubdirs(path) {
+  if (path.endsWith(".webp")) {return;}
+
+  let res = await fetch(SERVERURL + path, {method: "GET", headers: {"Authorization": key}});
+  let data = await res.text();
+  if (data.startsWith("{")) {
+    data = JSON.parse(data);
+    const directoryList = document.getElementById("delete-directory");
+
+    let dir;
+    for (dirName of data.data) {
+      dir = document.createElement("div");
+      dir.classList.add("delete-object");
+      dir.appendChild(document.createTextNode(dirName));
+      dir.tabIndex = 0;
+      
+      directoryList.appendChild(dir);
+    }
+  } else {
+    console.error("Error:", data);
+  }
+}
+
+function deleteElementsOfClass(cls) {
+  var els = document.getElementsByClassName(cls);
+  while(els[0]) {
+      els[0].parentNode.removeChild(els[0]);
+  }
+}
+
+function addEventListeners() {
+  subdirectories = document.getElementsByClassName("delete-object");
+  for (subdirectory of subdirectories) {
+    subdirectory.addEventListener("click", (e) => {
+      const deletionPath = $$("[data-path]")[0];
+      deletionPath.innerHTML = deletionPath.innerHTML + "/" + e.target.innerHTML;
+      deleteElementsOfClass("delete-object");
+      generateSubdirs(deletionPath.innerHTML).then(() => {
+        addEventListeners();
+      });
+    })
+  }
+}
+
+document.getElementById("delete-up").addEventListener("click", (e) => {
+  e.preventDefault();
+  const deletionPath = $$("[data-path]")[0].innerHTML;
+  if (deletionPath === "/assets/img") {return;}
+
+  $$("[data-path]")[0].innerHTML = deletionPath.substring(0, deletionPath.lastIndexOf("/"));
+  deleteElementsOfClass("delete-object");
+  generateSubdirs($$("[data-path]")[0].innerHTML).then(() => {
+    addEventListeners();
+  });
+});
+
+document.getElementById("delete").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const deletionPath = $$("[data-path]")[0].innerHTML;
+  fetch(SERVERURL + deletionPath, {method: "DELETE", headers: {"Authorization": key}});
 })
 
 /*---Upload Archive----------------*/
