@@ -157,7 +157,7 @@ document.getElementById("delete-up").addEventListener("click", (e) => {
 
   $$("[data-path]")[0].innerHTML = deletionPath.substring(0, deletionPath.lastIndexOf("/"));
   deleteElementsOfClass("delete-object");
-  generateSubdirs(deletionPath.innerHTML).then(() => {
+  generateSubdirs($$("[data-path]")[0].innerHTML).then(() => {
     addEventListeners();
   });
 });
