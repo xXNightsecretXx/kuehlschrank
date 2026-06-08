@@ -1,6 +1,6 @@
 const SALT = "35c29552e318015e";
 const N = 4094;
-const SERVERURL = "http://localhost:3000";
+const SERVERURL = "https://kuehlschrank.farni.ng";
 
 function $$(selector) {return document.querySelectorAll(selector);};
 
