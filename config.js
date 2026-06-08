@@ -121,6 +121,7 @@ async function generateSubdirs(path) {
       dir = document.createElement("div");
       dir.classList.add("delete-object");
       dir.appendChild(document.createTextNode(dirName));
+      dir.tabIndex = 0;
       
       directoryList.appendChild(dir);
     }
