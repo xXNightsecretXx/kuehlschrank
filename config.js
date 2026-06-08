@@ -148,6 +148,18 @@ function addEventListeners() {
   }
 }
 
+document.getElementById("delete-up").addEventListener("click", (e) => {
+  e.preventDefault();
+  const deletionPath = $$("[data-path]")[0].innerHTML;
+  if (deletionPath === "/assets/img") {return;}
+
+  $$("[data-path]")[0].innerHTML = deletionPath.substring(0, deletionPath.lastIndexOf("/"));
+  deleteElementsOfClass("delete-object");
+  generateSubdirs(deletionPath.innerHTML).then(() => {
+    addEventListeners();
+  });
+});
+
 /*---Upload Archive----------------*/
 document.getElementById("archive-upload").addEventListener("submit", (e) => {
   e.preventDefault();
