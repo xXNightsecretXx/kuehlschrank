@@ -466,8 +466,14 @@ const server = http.createServer((req, res) => {
 
     fsp.rm(filePath, {recursive: true, force: true})
     .then(() => fsp.rm(filePath.replace("/img/", "/preview/").replace("\\img\\", "\\preview\\"), {recursive: true, force: true}))
-    .then(() => {return fsp.readFile(path.join(__dirname, "assets/imgconfig.json"));})
-    .then((data) => {
+    .then(() => {return Promise.allSettled([
+      fsp.readFile(path.join(__dirname, "assets/imgconfig.json")),
+      fsp.readdir(path.dirname(path.join(__dirname, pathname)))
+    ]);})
+    .then((r) => {
+      const data = r[0].value
+      const dirContent = r[1].value.sort();
+      const dirIndex = dirContent.indexOf(path.basename(pathname));
       let imageJSON = JSON.parse(data);
 
       let pathElements = pathname.split("/").slice(3);
@@ -475,8 +481,13 @@ const server = http.createServer((req, res) => {
       const parent = pathElements.reduce((current, key) => {
         return current && current[key];
       }, imageJSON);
-
-      delete parent[child];
+      
+      if (stats.isDirectory()) {
+        delete parent[child];
+      } else if (stats.isFile()) {
+        parent.alts.splice(dirIndex, 1);
+        parent.descriptions.splice(dirIndex, 1);
+      }
 
       return fsp.writeFile(path.join(__dirname, "assets/imgconfig.json"), JSON.stringify(imageJSON, null, 4));
     })
