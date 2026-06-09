@@ -176,7 +176,7 @@ document.getElementById("edit").addEventListener("submit", (e) => {
   const data = Object.create(Object.prototype);
   data["alttext"] = document.getElementById("edit-alt-text").value;
   data["description"] = document.getElementById("edit-description").value;
-console.log(data)
+
   fetch(SERVERURL + editPath, {
     method: "PATCH",
     headers: {
