@@ -598,7 +598,7 @@ const server = http.createServer((req, res) => {
         return;
       }
 
-      if (!(body.alttext && body.description)) {
+      if (!(body.alttext && body.description)) {console.log(body)
         res.writeHead(400, { "Content-Type": "text/plain" });
         res.end("400 - Bad Request: Missing field");
         logMsg("e", "Error while processing request: Missing Field");
