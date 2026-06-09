@@ -629,6 +629,7 @@ const server = http.createServer((req, res) => {
       }).then(() => {
         res.writeHead(200);
         res.end();
+        logMsg("i", "Description successfully updated");
         return;
       });
     });
