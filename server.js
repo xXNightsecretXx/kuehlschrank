@@ -552,8 +552,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, {
         "alttext": alttext,
         "content-length": 0,
-        "description": description,
-        "access-control-expose-headers": "alttext, content-length, description"
+        "description": description
       });
       res.end();
       return;
