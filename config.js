@@ -1,6 +1,6 @@
 const SALT = "35c29552e318015e";
 const N = 4094;
-const SERVERURL = "https://kuehlschrank.farni.ng";
+const SERVERURL = location.protocol + "//" + location.host;
 
 function $$(selector) {return document.querySelectorAll(selector);};
 
@@ -101,12 +101,12 @@ document.getElementById("upload").addEventListener("submit", (e) => {
           "Authorization": key
         },
         body: JSON.stringify(data)
-      })
+      });
     });
   }
 })
 
-/*---Delete Assets-----------------*/
+/*---Edit Assets------------------*/
 async function generateSubdirs(path) {
   if (path.endsWith(".webp")) {return;}
 
@@ -167,6 +167,23 @@ document.getElementById("delete").addEventListener("submit", (e) => {
   e.preventDefault();
   const deletionPath = $$("[data-path]")[0].innerHTML;
   fetch(SERVERURL + deletionPath, {method: "DELETE", headers: {"Authorization": key}});
+})
+
+document.getElementById("edit").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const editPath = $$("[data-path]")[0].innerHTML;
+
+  const data = Object.create(Object.prototype);
+  data["alttext"] = document.getElementById("edit-alt-text").value;
+  data["description"] = document.getElementById("edit-description").value;
+
+  fetch(SERVERURL + editPath, {
+    method: "PATCH",
+    headers: {
+      "Authorization": key
+    },
+    body: JSON.stringify(data)
+  });
 })
 
 /*---Upload Archive----------------*/

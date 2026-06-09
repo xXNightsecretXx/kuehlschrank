@@ -157,6 +157,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   width: min-content;
 }
 
+#edit-delete-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 #delete {
   display: flex;
   flex-direction: column;
@@ -208,4 +214,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .delete-object:active {
   transition: 0s;
   background: var(--dp1);
+}
+
+#edit-buttons {
+  margin: 0 12px;
 }
