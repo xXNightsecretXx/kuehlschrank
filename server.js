@@ -465,7 +465,7 @@ const server = http.createServer((req, res) => {
     }
 
     fsp.rm(filePath, {recursive: true, force: true})
-    .then(() => fsp.rm(filePath.replace("/img/", "/preview/"), {recursive: true, force: true}))
+    .then(() => fsp.rm(filePath.replace("/img/", "/preview/").replace("\\img\\", "\\preview\\"), {recursive: true, force: true}))
     .then(() => {return fsp.readFile(path.join(__dirname, "assets/imgconfig.json"));})
     .then((data) => {
       let imageJSON = JSON.parse(data);
