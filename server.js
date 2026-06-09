@@ -557,6 +557,80 @@ const server = http.createServer((req, res) => {
       res.end();
       return;
     });
+  } else if (req.method == "PATCH") {
+    console.log("[" + new Date().toTimeString().split(" ")[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
+                + (req.headers["X-forwarded-for"]?.split(",")[0].trim() || req.socket.remoteAddress)
+                + " \x1b[97m\x1b[41m PATCH \x1b[0m " + req.url);
+
+    if (authenticateRequest(req, res)) {return;}
+  
+    // parse URL
+    const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
+    let pathname = parsedUrl.pathname;
+    const filePath = path.join(__dirname, pathname);
+
+    let stats;
+    try {
+      stats = fs.lstatSync(filePath);
+    } catch (e) {
+      res.writeHead(404, { "Content-Type": "text/plain" });
+      res.end();
+      return;
+    }
+
+    if (stats.isDirectory()) {
+      res.writeHead(404, { "Content-Type": "text/plain" });
+      res.end();
+      return;
+    }
+
+    let body = "";
+    req.on("data", chunk => {body += chunk;});
+
+    req.on("end", () => {
+      try {
+        body = JSON.parse(body)
+      } catch (err) {
+        res.writeHead(400, { "Content-Type": "text/plain" });
+        res.end("400 - Bad Request");
+        logMsg("e", "Could not parse request content: " + err);
+        return;
+      }
+
+      if (!(body.alttext && body.description)) {
+        res.writeHead(400, { "Content-Type": "text/plain" });
+        res.end("400 - Bad Request: Missing field");
+        logMsg("e", "Error while processing request: Missing Field");
+        return;
+      }
+
+      Promise.allSettled([
+        fsp.readFile(path.join(__dirname, "assets/imgconfig.json")),
+        fsp.readdir(path.dirname(path.join(__dirname, pathname)))
+      ]).then((r) => {
+        const data = r[0].value;
+
+        const dirContent = r[1].value.sort();
+
+        const dirIndex = dirContent.indexOf(path.basename(pathname));
+
+        const imageJSON = JSON.parse(data);
+
+        const pathElements = path.dirname(pathname).split("/").slice(3);
+        const date = pathElements.reduce((current, key) => {
+          return current && current[key];
+        }, imageJSON);
+
+        date.alts[dirIndex] = body.alttext;
+        date.descriptions[dirIndex] = body.description;
+
+        return fsp.writeFile(path.join(__dirname, "assets/imgconfig.json"), JSON.stringify(imageJSON, null, 4));
+      }).then(() => {
+        res.writeHead(200);
+        res.end();
+        return;
+      });
+    });
   } else {
     res.writeHead(405, { "Content-Type": "text/plain" });
     res.end("405 - Method Not Allowed");
