@@ -217,7 +217,7 @@ const server = http.createServer((req, res) => {
   }
   
   res.setHeader("Access-Control-Allow-Origin", req.headers.origin || "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, HEAD, PATCH, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Authorization");
 
   if (req.method === "OPTIONS") {
@@ -490,6 +490,62 @@ const server = http.createServer((req, res) => {
       res.end("500 - Internal Server Error");
       logMsg("fe", err);
       throw err;
+    });
+  } else if (req.method == "HEAD") {
+    console.log("[" + new Date().toTimeString().split(" ")[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
+                + (req.headers["X-forwarded-for"]?.split(",")[0].trim() || req.socket.remoteAddress)
+                + " \x1b[97m\x1b[41m HEAD \x1b[0m " + req.url);
+
+    if (authenticateRequest(req, res)) {return;}
+  
+    // parse URL
+    const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
+    let pathname = parsedUrl.pathname;
+    const filePath = path.join(__dirname, pathname);
+
+    let stats;
+    try {
+      stats = fs.lstatSync(filePath);
+    } catch (e) {
+      res.writeHead(404, { "Content-Type": "text/plain" });
+      res.end();
+      return;
+    }
+
+    if (stats.isDirectory()) {
+      res.writeHead(404, { "Content-Type": "text/plain" });
+      res.end();
+      return;
+    }
+
+    Promise.allSettled([
+      fsp.readFile(path.join(__dirname, "assets/imgconfig.json")),
+      fsp.readdir(path.dirname(path.join(__dirname, pathname)))
+    ]).then((r) => {
+      const data = r[0].value;
+
+      const dirContent = r[1].value.sort();
+
+      const dirIndex = dirContent.indexOf(path.basename(pathname));
+
+      const imageJSON = JSON.parse(data);
+
+      const pathElements = path.dirname(pathname).split("/").slice(3);
+      const date = pathElements.reduce((current, key) => {
+        return current && current[key];
+      }, imageJSON);
+
+      const alttext = date.alts[dirIndex];
+      const description = date.descriptions[dirIndex];
+
+      res.writeHead(200, {
+        "alttext": alttext,
+        "content-length": 0,
+        "description": description,
+        "access-control-expose-headers": "alttext, content-length, description"
+      });
+      res.end();
+      return;
     });
   } else {
     res.writeHead(405, { "Content-Type": "text/plain" });
