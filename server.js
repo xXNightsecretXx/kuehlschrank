@@ -505,7 +505,8 @@ const server = http.createServer((req, res) => {
   } else if (req.method == "HEAD") {
     console.log("[" + new Date().toTimeString().split(" ")[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
                 + (req.headers["X-forwarded-for"]?.split(",")[0].trim() || req.socket.remoteAddress)
-                + " \x1b[97m\x1b[41m HEAD \x1b[0m " + req.url);
+                + " \x1b[97m\x1b[45m HEAD \x1b[0m");
+
 
     if (authenticateRequest(req, res)) {return;}
   
@@ -560,7 +561,7 @@ const server = http.createServer((req, res) => {
   } else if (req.method == "PATCH") {
     console.log("[" + new Date().toTimeString().split(" ")[0] + "] \x1b[97m\x1b[44m HTTP \x1b[0m "
                 + (req.headers["X-forwarded-for"]?.split(",")[0].trim() || req.socket.remoteAddress)
-                + " \x1b[97m\x1b[41m PATCH \x1b[0m " + req.url);
+                + " \x1b[97m\x1b[45m PATCH \x1b[0m");
 
     if (authenticateRequest(req, res)) {return;}
   
