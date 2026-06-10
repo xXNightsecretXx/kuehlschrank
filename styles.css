@@ -313,10 +313,10 @@ h1, h2, h3, h4, h5, h6, p {color: var(--text); margin: 0;}
 
   /*4 text*/
 .text-wrapper {
+  align-items: center;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  justify-content: center;
   overflow-y: auto;
   padding: 16px 0;
   scrollbar-width: thin;
