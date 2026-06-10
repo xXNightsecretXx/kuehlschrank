@@ -348,7 +348,7 @@ const server = http.createServer((req, res) => {
         return;
       }
 
-      if (!(body.date && body.alttext && !isNaN(body.description) && body.data)) {
+      if (!(body.date && body.alttext && (typeof body.description == "string") && body.data)) {
         res.writeHead(400, { "Content-Type": "text/plain" });
         res.end("400 - Bad Request: Missing field");
         logMsg("e", "Error while processing request: Missing Field");
@@ -598,7 +598,7 @@ const server = http.createServer((req, res) => {
         return;
       }
 
-      if (!body.alttext || isNaN(body.description)) {
+      if (!body.alttext || (typeof body.description == "string")) {
         res.writeHead(400, { "Content-Type": "text/plain" });
         res.end("400 - Bad Request: Missing field");
         logMsg("e", "Error while processing request: Missing Field");
