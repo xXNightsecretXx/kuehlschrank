@@ -10,9 +10,8 @@ Der Farning-Kühlschrank wird [hier](https://kuehlschrank.farni.ng/index.html) d
 Du kannst Bilder über [Discord](https://discord.com) an [mich](https://discord.com/users/1000868050129653862) senden
 
 ## Roadmap
-- Dynamische Bilderanzeige ohne index.html verändern zu müssen
-- Animationen
-- Vorschau von Bildern in voller Größe
+- Beschreibungsvorschau im Upload-Panel
+- <i>(vielleicht)</i> öffentlicher Upload-Zugang
 
 ---
 
