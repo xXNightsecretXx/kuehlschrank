@@ -418,13 +418,22 @@ const server = http.createServer((req, res) => {
 
     if (authenticateRequest(req, res)) {return;}
 
+    const oldJSON = JSON.parse(fs.readFileSync(path.join(__dirname + "/assets/imgconfig.json")));
+
     const unzipStream = unzipper.Extract({path: path.join(__dirname, "assets")});
     req.pipe(unzipStream);
 
     unzipStream.on("close", () => {
-      logMsg("i", "Archive successfully uploaded")
-      res.writeHead(200, { "Content-Type": "text/plain" });
-      res.end("Received");
+      logMsg("i", "Archive successfully uploaded");
+      fsp.readFile(path.join(__dirname + "/assets/imgconfig.json")).then((newJSON) => {
+        newJSON = JSON.parse(newJSON);
+
+        logMsg("i", "JSON files successfully merged");
+        return fsp.writeFile(path.join(__dirname + "/assets/imgconfig.json"), JSON.stringify({...oldJSON, ...newJSON}, null, 4));
+      }).then(() => {
+        res.writeHead(200, { "Content-Type": "text/plain" });
+        res.end("Received");
+      })
     });
 
     unzipStream.on("error", (err) => {
