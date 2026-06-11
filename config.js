@@ -199,6 +199,7 @@ document.getElementById("delete").addEventListener("submit", (e) => {
 
 document.getElementById("edit").addEventListener("submit", (e) => {
   e.preventDefault();
+  if (!path.endsWith(".webp")) {return;}
   startLoad(e.submitter);
 
   const editPath = $$("[data-path]")[0].innerHTML;
