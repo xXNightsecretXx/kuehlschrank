@@ -12,9 +12,10 @@ import {fileURLToPath, pathToFileURL} from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const KEY = "3878c50010ee4778249d7cc5da91086860e986b488c4685e94c41a133155149f4e6eeeb699163532f9c39564b61c06b0855ebcea4f4612e0ab4b4dfdbe039e68";
+const MASTERKEY = "3878c50010ee4778249d7cc5da91086860e986b488c4685e94c41a133155149f4e6eeeb699163532f9c39564b61c06b0855ebcea4f4612e0ab4b4dfdbe039e68";
+const MODKEY    = "9ba1c6309c2fe7d1614e66354149f7e71a438c121e9ac10a1aeb1df243d4ade8a3cb40857545644a7cee67eede59dd9dc272092a50a7785e46ffaaa8e46fe826";
 const MAXLENGTH = Infinity;
-const PORT = 3000;
+const PORT      = 3000;
 
 function logMsg(type, msg) {
   // don't use for logging HTTP
@@ -25,22 +26,29 @@ function logMsg(type, msg) {
   else                                       {console.log(`[${time}] \x1b[97m\x1b[46m INFO \x1b[0m ${msg}`)}
 }
 
-function authenticateRequest(req, res) {
+function authenticateRequest(req, res, loose=false) {
   let key = req.headers["authorization"];
   logMsg("i", "Authorization of " + req.method + " request...");
-  if (!key || crypto.createHash("sha512").update(key).digest("hex") != KEY) {
+  let hashedKey
+  try {hashedKey = crypto.createHash("sha512").update(key).digest("hex");}
+  catch {return true;}
+  if (
+    !key ||
+    hashedKey != MASTERKEY && hashedKey != MODKEY && loose ||
+    hashedKey != MASTERKEY && !loose
+  ) {
     res.writeHead(401, { "Content-Type": "text/plain" });
     res.end("401 - Unauthorized");
     logMsg("w", "-> 401 Authorization failed with key: " + key)
     return true;
   }
-  logMsg("i", "Authorization succeeded")
+  logMsg("i", "Authorization succeeded");
 }
 
 function authenticateRequestHide(req, res) {
   let key = req.headers["authorization"];
   logMsg("i", "Authorization of " + req.method + " request...");
-  if (!key || crypto.createHash("sha512").update(key).digest("hex") != KEY) {
+  if (!key || crypto.createHash("sha512").update(key).digest("hex") != MASTERKEY) {
     res.writeHead(404, { "Content-Type": "text/plain" });
     res.end("404 - Not Found");
     logMsg("w", "-> 404 Authorization failed with key: " + key)
@@ -333,7 +341,7 @@ const server = http.createServer((req, res) => {
                 + (req.headers["X-forwarded-for"]?.split(",")[0].trim() || req.socket.remoteAddress)
                 + " \x1b[97m\x1b[45m POST \x1b[0m");
 
-    if (authenticateRequest(req, res)) {return;}
+    if (authenticateRequest(req, res, true)) {return;}
 
     let body = "";
     req.on("data", chunk => {body += chunk;});
