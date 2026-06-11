@@ -186,15 +186,20 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding: 8px;
 }
 
-#delete-up {
+#delete-buttons {
+  display: flex;
+  gap: 12px;
+  margin-left: auto;
+}
+
+#delete-up, #delete-reload {
   background: var(--dp6);
   border: 1px solid #00000000;
   border-radius: 50%;
   margin: -5px;
-  margin-left: auto;
 }
 
-#delete-up:hover {
+#delete-up:hover, #delete-reload:hover {
   background: var(--dp12);
   border: 1px solid var(--border);
 }

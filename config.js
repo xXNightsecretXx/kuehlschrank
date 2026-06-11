@@ -162,6 +162,12 @@ function addEventListeners() {
   }
 }
 
+document.getElementById("delete-reload").addEventListener("click", (e) => {
+  e.preventDefault();
+  deleteElementsOfClass("delete-object");
+  generateSubdirs($$("[data-path]")[0].innerHTML).then(() => {addEventListeners();});
+})
+
 document.getElementById("delete-up").addEventListener("click", (e) => {
   e.preventDefault();
   const deletionPath = $$("[data-path]")[0].innerHTML;
@@ -169,9 +175,7 @@ document.getElementById("delete-up").addEventListener("click", (e) => {
 
   $$("[data-path]")[0].innerHTML = deletionPath.substring(0, deletionPath.lastIndexOf("/"));
   deleteElementsOfClass("delete-object");
-  generateSubdirs($$("[data-path]")[0].innerHTML).then(() => {
-    addEventListeners();
-  });
+  generateSubdirs($$("[data-path]")[0].innerHTML).then(() => addEventListeners());
 });
 
 document.getElementById("delete").addEventListener("submit", (e) => {
