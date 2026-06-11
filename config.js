@@ -18,6 +18,15 @@ async function stretch(str, n) {
   return str;
 }
 
+/*---Load Icon---------------------*/
+function startLoad(element) {
+  element.classList.add("load");
+}
+
+function endLoad(element) {
+  element.classList.remove("load");
+}
+
 /*---Theme-------------------------*/
 function currentTheme() {
   let theme = document.documentElement.dataset.theme;
@@ -86,6 +95,8 @@ function afterKeyEnter() {
 /*---Upload Assets-----------------*/
 document.getElementById("upload").addEventListener("submit", (e) => {
   e.preventDefault();
+  startLoad(e.submitter);
+
   const file = document.getElementById("upload-file").files[0];
   if (file) {
     const reader = new FileReader();
@@ -103,7 +114,7 @@ document.getElementById("upload").addEventListener("submit", (e) => {
           "Authorization": key
         },
         body: JSON.stringify(data)
-      });
+      }).then(() => endLoad(e.submitter));
     });
   }
 })
@@ -180,12 +191,16 @@ document.getElementById("delete-up").addEventListener("click", (e) => {
 
 document.getElementById("delete").addEventListener("submit", (e) => {
   e.preventDefault();
+  startLoad(e.submitter);
   const deletionPath = $$("[data-path]")[0].innerHTML;
-  fetch(SERVERURL + deletionPath, {method: "DELETE", headers: {"Authorization": key}});
+  fetch(SERVERURL + deletionPath, {method: "DELETE", headers: {"Authorization": key}})
+  .then(() => endLoad(e.submitter));
 })
 
 document.getElementById("edit").addEventListener("submit", (e) => {
   e.preventDefault();
+  startLoad(e.submitter);
+
   const editPath = $$("[data-path]")[0].innerHTML;
 
   const data = Object.create(Object.prototype);
@@ -198,12 +213,13 @@ document.getElementById("edit").addEventListener("submit", (e) => {
       "Authorization": key
     },
     body: JSON.stringify(data)
-  });
+  }).then(() => endLoad(e.submitter));
 })
 
 /*---Upload Archive----------------*/
 document.getElementById("archive-upload").addEventListener("submit", (e) => {
   e.preventDefault();
+  startLoad(e.submitter);
   
   const file = document.getElementById("archive-upload-file").files[0];
   if (file) {
@@ -214,7 +230,7 @@ document.getElementById("archive-upload").addEventListener("submit", (e) => {
         "Content-Type": "application/zip"
       },
       body: file
-    });
+    }).then(() => endLoad(e.submitter));
   }
 });
 
@@ -248,5 +264,6 @@ async function downloadArchive() {
 
 document.getElementById("download").addEventListener("submit", (e) => {
   e.preventDefault();
-  downloadArchive();
+  startLoad(e.submitter);
+  downloadArchive().then(() => endLoad(e.submitter));
 });

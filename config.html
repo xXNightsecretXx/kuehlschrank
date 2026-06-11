@@ -39,7 +39,14 @@
         <label>Alternativtext *</label>
         <input id="upload-description" placeholder="">
         <label>Beschreibung</label>
-        <button id ="upload-submit" class="btn btn-medium btn-submit" type="submit"><b>Hochladen</b></button>
+        <button id ="upload-submit" class="btn btn-medium btn-submit" type="submit">
+          <b>Hochladen</b>
+          <svg id="icon-loading" class="icon" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="8" cy="8" r="7" stroke-dasharray="11">
+              <animateTransform attributeName="transform" type="rotate" from="0 8 8" to="360 8 8" dur="1s" repeatCount="indefinite"></animateTransform>
+            </circle>
+          </svg>
+        </button>
       </form>
       <div id="edit-delete-wrapper">
         <form id="delete">
@@ -68,18 +75,46 @@
           <label>Beschreibung</label>
         </form>
         <div id="edit-buttons">
-          <button id="edit-submit" class="btn btn-medium btn-submit" form="edit" type="submit"><b>Speichern</b></button>
-          <button id="delete-submit" class="btn btn-medium btn-submit" form="delete" type="submit"><b>Löschen</b></button>
+          <button id="edit-submit" class="btn btn-medium btn-submit" form="edit" type="submit">
+            <b>Speichern</b>
+            <svg id="icon-loading" class="icon" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="8" cy="8" r="7" stroke-dasharray="11">
+                <animateTransform attributeName="transform" type="rotate" from="0 8 8" to="360 8 8" dur="1s" repeatCount="indefinite"></animateTransform>
+              </circle>
+            </svg>
+          </button>
+          <button id="delete-submit" class="btn btn-medium btn-submit" form="delete" type="submit">
+            <b>Löschen</b>
+            <svg id="icon-loading" class="icon" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="8" cy="8" r="7" stroke-dasharray="11">
+                <animateTransform attributeName="transform" type="rotate" from="0 8 8" to="360 8 8" dur="1s" repeatCount="indefinite"></animateTransform>
+              </circle>
+            </svg>
+          </button>
         </div>
       </div>
       <form id="archive-upload">
         <h3>Archiv Importieren</h3>
         <input required id="archive-upload-file" type="file" accept="application/zip">
-        <button id="archive-upload-submit" class="btn btn-medium btn-submit" type="submit"><b>ZIP-Archiv Importieren</b></button>
+        <button id="archive-upload-submit" class="btn btn-medium btn-submit" type="submit">
+          <b>ZIP-Archiv Importieren</b>
+          <svg id="icon-loading" class="icon" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="8" cy="8" r="7" stroke-dasharray="11">
+              <animateTransform attributeName="transform" type="rotate" from="0 8 8" to="360 8 8" dur="1s" repeatCount="indefinite"></animateTransform>
+            </circle>
+          </svg>
+        </button>
       </form>
       <form id="download">
         <h3>Archiv Exportieren</h3>
-        <button id ="download-submit" class="btn btn-medium btn-submit" type="submit"><b>ZIP-Archiv Exportieren</b></button>
+        <button id ="download-submit" class="btn btn-medium btn-submit" type="submit">
+          <b>ZIP-Archiv Exportieren</b>
+          <svg id="icon-loading" class="icon" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="8" cy="8" r="7" stroke-dasharray="11">
+              <animateTransform attributeName="transform" type="rotate" from="0 8 8" to="360 8 8" dur="1s" repeatCount="indefinite"></animateTransform>
+            </circle>
+          </svg>
+        </button>
       </form>
     </div>
     <script src="config.js" defer></script>
