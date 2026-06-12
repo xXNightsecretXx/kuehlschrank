@@ -10,7 +10,7 @@ Der Farning-Kühlschrank wird [hier](https://kuehlschrank.farni.ng/index.html) d
 Du kannst Bilder über [Discord](https://discord.com) an [mich](https://discord.com/users/1000868050129653862) senden
 
 ## Roadmap
--
+\-
 
 ---
 
